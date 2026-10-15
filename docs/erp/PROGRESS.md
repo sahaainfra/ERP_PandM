@@ -14,7 +14,7 @@
 | 07 | Mandatory Operator Readings & Photo Evidence | 2 | ✅ Complete | 2026-01-28 | [part-07-report.md](parts/part-07-report.md) |
 | 08 | Senior Authorization Workflow & Audit Controls | 2 | ✅ Complete | 2026-01-28 | [part-08-report.md](parts/part-08-report.md) |
 | 09 | Fuel Procurement, Storage, Issue & Stock Reconciliation | 3 | ✅ Complete | 2026-01-28 | [part-09-report.md](parts/part-09-report.md) |
-| 10 | RMC Dispatch & Transit Mixer Tracking | 3 | 🔲 Not started | — | — |
+| 10 | Daily Calibrated Fuel Consumption Verification | 3 | ✅ Complete | 2026-01-28 | [part-10-report.md](parts/part-10-report.md) |
 | 11 | Team Chat: Backend, Persistence, File Sharing | 3 | 🔲 Not started | — | — |
 | 12 | Finance: Chart of Accounts, Vouchers, Posting | 4 | 🔲 Not started | — | — |
 | 13 | Finance: Project Costing, Budget vs Actual | 4 | 🔲 Not started | — | — |

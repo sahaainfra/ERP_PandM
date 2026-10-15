@@ -19,7 +19,7 @@ const fieldChecksStore = storage.getAdapter<FieldCheck>('field_checks');
 // ============================================================================
 
 export async function createCalibrationRecord(
-   Omit<CalibrationRecord, 'id' | 'status' | 'createdAt' | 'updatedAt'>
+  inputData: Omit<CalibrationRecord, 'id' | 'status' | 'createdAt' | 'updatedAt'>
 ): Promise<CalibrationRecord> {
   // Determine status based on next due date
   const now = new Date();
@@ -186,7 +186,7 @@ export async function isInstrumentCalibratedOnDate(instrumentId: string, date: s
 // ============================================================================
 
 export async function createTankCalibrationChart(
-   Omit<TankCalibrationChart, 'id' | 'createdAt' | 'updatedAt'>
+  inputData: Omit<TankCalibrationChart, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<TankCalibrationChart> {
   // Validate entries are sorted by dip reading
   const sortedEntries = [...inputData.entries].sort((a, b) => a.dipReading - b.dipReading);
@@ -282,7 +282,7 @@ export function dipToVolumeFromChart(dip: number, chart: TankCalibrationChart): 
 // Field Checks
 // ============================================================================
 
-export async function createFieldCheck( Omit<FieldCheck, 'id' | 'createdAt'>): Promise<FieldCheck> {
+export async function createFieldCheck(inputData: Omit<FieldCheck, 'id' | 'createdAt'>): Promise<FieldCheck> {
   const fieldCheck: FieldCheck = {
     ...inputData,
     id: generateId(),

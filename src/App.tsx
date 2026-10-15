@@ -22,6 +22,10 @@ import PendingApprovals from './pages/PendingApprovals';
 import ApproverReview from './pages/ApproverReview';
 import MobileFuelIssue from './pages/MobileFuelIssue';
 import TankDashboard from './pages/TankDashboard';
+import DailyVerificationSheet from './pages/DailyVerificationSheet';
+import AssetFuelHistory from './pages/AssetFuelHistory';
+import BenchmarkRegister from './pages/BenchmarkRegister';
+import CalibrationRegister from './pages/CalibrationRegister';
 
 export default function App() {
   return (
@@ -51,6 +55,10 @@ export default function App() {
           <Route path="/approvals/:id" element={<ApproverReview />} />
           <Route path="/fuel/issue" element={<MobileFuelIssue />} />
           <Route path="/fuel/tanks" element={<TankDashboard />} />
+          <Route path="/fuel/verification" element={<DailyVerificationSheet />} />
+          <Route path="/fuel/benchmarks" element={<BenchmarkRegister />} />
+          <Route path="/fuel/calibrations" element={<CalibrationRegister />} />
+          <Route path="/assets/:id/fuel-history" element={<AssetFuelHistory />} />
         </Routes>
       </Layout>
     </BrowserRouter>

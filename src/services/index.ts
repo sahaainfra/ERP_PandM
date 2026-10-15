@@ -51,6 +51,11 @@ import * as fuelReceiptsService from './fuelReceipts';
 import * as fuelIssuesService from './fuelIssues';
 import * as fuelTransfersService from './fuelTransfers';
 import * as tankReconciliationService from './tankReconciliation';
+import * as calibrationService from './calibrationService';
+import * as benchmarkService from './benchmarkService';
+import * as verificationEngineService from './verificationEngine';
+import * as verificationJobService from './verificationJob';
+import * as investigationService from './investigationService';
 
 export {
   mastersService as masters,
@@ -77,6 +82,11 @@ export {
   fuelIssuesService as fuelIssues,
   fuelTransfersService as fuelTransfers,
   tankReconciliationService as tankReconciliation,
+  calibrationService as calibration,
+  benchmarkService as benchmark,
+  verificationEngineService as verificationEngine,
+  verificationJobService as verificationJob,
+  investigationService as investigation,
 };
 
 // ============================================================================
@@ -92,6 +102,7 @@ import * as approvalMatrix from './approvalMatrix';
 import * as assetCategories from './assetCategories';
 import * as workflowConfig from './workflowConfig';
 import * as fuelMasters from './fuelMasters';
+import * as benchmark from './benchmarkService';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -139,6 +150,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed fuel masters (Part 09)
   await fuelMasters.seedDefaultFuelTypes();
   logger.info('Fuel masters seeded');
+
+  // Seed fuel benchmarks (Part 10)
+  await benchmark.seedDefaultBenchmarks();
+  logger.info('Fuel benchmarks seeded');
 
   logger.info('Platform initialization complete');
 }

@@ -35,6 +35,7 @@ export interface CalibrationRecord {
   // Status
   status: CalibrationStatus;
   
+  // Metadata
   createdAt: string;
   updatedAt: string;
 }
@@ -46,15 +47,19 @@ export interface TankCalibrationChart {
   effectiveFrom: string;
   effectiveTo?: string;
   
-  entries: TankCalibrationEntry[];
+  // Chart data
+  entries: TankChartEntry[];
   
-  createdBy: string;
+  // Approval
   approvedBy: string;
+  approvedAt: string;
+  
+  // Metadata
   createdAt: string;
   updatedAt: string;
 }
 
-export interface TankCalibrationEntry {
+export interface TankChartEntry {
   dipReading: number; // mm
   volume: number; // litres
 }
@@ -65,21 +70,19 @@ export interface FieldCheck {
   checkDate: string;
   checkType: 'proving_can' | 'meter_comparison';
   
-  // Proving can test
-  certifiedMeasure?: number;
-  dispenserReading?: number;
-  error?: number;
-  tolerance?: number;
+  // Measurements
+  certifiedMeasure?: number; // For proving can
+  instrumentReading: number;
+  error: number;
+  tolerance: number;
   
-  // Meter comparison
-  meterReading?: number;
-  telematicsReading?: number;
-  gpsDistance?: number;
-  deviation?: number;
-  
+  // Result
   result: 'pass' | 'fail';
+  
+  // Personnel
   performedBy: string;
   
+  // Metadata
   createdAt: string;
 }
 
@@ -99,49 +102,63 @@ export interface FuelBenchmark {
   model?: string;
   assetCategory?: string;
   
-  // Benchmark value
-  value: number;
+  // Benchmark values
+  baseValue: number;
   unit: BenchmarkUnit;
-  
-  // For dual-use assets (e.g., transit mixer)
-  secondaryValue?: number;
-  secondaryUnit?: BenchmarkUnit;
-  secondaryUsageField?: string; // e.g., 'drum_rotation_hours', 'pumping_hours'
-  
-  // Source and evidence
   source: BenchmarkSource;
-  evidenceAttachmentId?: string;
+  sourceEvidenceAttachmentId?: string;
+  
+  // Composite benchmarks (for dual-use assets)
+  isComposite: boolean;
+  travelComponent?: {
+    value: number;
+    unit: 'L/km';
+  };
+  operationalComponent?: {
+    value: number;
+    unit: 'L/hr';
+  };
+  
+  // Condition factors
+  conditionFactors: ConditionFactor[];
   
   // Tolerances
-  warningToleranceLower: number; // percentage, e.g., -10
-  warningToleranceUpper: number; // percentage, e.g., +10
-  criticalToleranceLower: number; // percentage, e.g., -20
-  criticalToleranceUpper: number; // percentage, e.g., +20
-  absoluteMinToleranceLitres: number; // e.g., 5 L
-  minimumUsageForEvaluation: number; // e.g., 2 hr or 20 km
+  warningToleranceLower: number; // percentage (e.g., -10)
+  warningToleranceUpper: number; // percentage (e.g., +10)
+  criticalToleranceLower: number; // percentage (e.g., -20)
+  criticalToleranceUpper: number; // percentage (e.g., +20)
+  absoluteMinimumToleranceLitres: number; // default 5 L
   
-  // Condition factors (optional multipliers)
-  conditionFactors?: ConditionFactor[];
+  // Minimum usage for evaluation
+  minimumUsageHours: number; // default 2 hr
+  minimumUsageKilometres: number; // default 20 km
   
-  // Versioning and approval
-  version: number;
+  // Effective dates
   effectiveFrom: string;
   effectiveTo?: string;
+  version: number;
+  
+  // Approval (maker-checker)
+  proposedBy: string;
+  approvedBy: string;
+  approvedAt: string;
+  
+  // Status
   status: 'draft' | 'approved' | 'superseded';
   
-  createdBy: string;
-  approvedBy?: string;
-  approvedAt?: string;
-  
+  // Metadata
   createdAt: string;
   updatedAt: string;
 }
 
 export interface ConditionFactor {
   id: string;
-  name: string; // e.g., 'duty_class', 'terrain', 'season'
-  value: string; // e.g., 'heavy', 'hilly', 'summer'
-  multiplier: number; // e.g., 1.2
+  benchmarkId: string;
+  factorType: 'duty_class' | 'attachment' | 'terrain' | 'load' | 'season';
+  factorValue: string; // e.g., 'heavy', 'bucket', 'hilly'
+  multiplier: number; // e.g., 1.2 for 20% increase
+  approvedBy: string;
+  createdAt: string;
 }
 
 export interface BenchmarkReviewSuggestion {
@@ -151,20 +168,26 @@ export interface BenchmarkReviewSuggestion {
   make?: string;
   model?: string;
   
-  currentBenchmark: number;
-  suggestedBenchmark: number;
-  basis: string; // e.g., '30-day median of verified actuals'
+  // Analysis
+  periodDays: number; // e.g., 30
+  medianActual: number;
+  benchmarkValue: number;
+  differencePercent: number;
   
+  // Suggestion
+  suggestedAction: 'increase_benchmark' | 'decrease_benchmark' | 'investigate';
+  reason: string;
+  
+  // Status
   status: 'pending' | 'accepted' | 'rejected';
   reviewedBy?: string;
   reviewedAt?: string;
-  reviewNotes?: string;
   
   createdAt: string;
 }
 
 // ============================================================================
-// Daily Fuel Verification
+// Daily Verification
 // ============================================================================
 
 export type FuelConsumptionMethod = 'tank_level' | 'full_tank_to_full_tank' | 'telematics';
@@ -183,74 +206,73 @@ export interface DailyFuelVerification {
   date: string; // YYYY-MM-DD
   assetId: string;
   
-  // Method and instruments
-  method: FuelConsumptionMethod;
-  instrumentsUsed: InstrumentUsage[];
+  // Method and inputs
+  consumptionMethod: FuelConsumptionMethod;
   
-  // Fuel consumed
-  openingLevel?: number; // litres
+  // Fuel consumed calculation
+  openingTankLevel?: number; // litres
   fuelIssued?: number; // litres
-  closingLevel?: number; // litres
+  closingTankLevel?: number; // litres
   fuelConsumed: number; // litres
   
-  // Full-tank method
+  // Full-tank method specifics
   fullTankWindowId?: string;
-  fullTankLitresIssued?: number;
+  isProvisional: boolean;
   
-  // Telematics method
-  telematicsFuelUsed?: number;
+  // Telematics cross-check
+  telematicsConsumption?: number; // litres
+  telematicsSourceMismatch: boolean;
   
-  // Usage
-  approvedUsage: number; // hours or km
-  usageUnit: 'hr' | 'km';
+  // Usage (from approved logbooks)
+  approvedUsageHours: number;
+  approvedUsageKilometres: number;
   
-  // Secondary usage (for dual-use assets)
-  secondaryUsage?: number;
-  secondaryUsageUnit?: 'hr' | 'km';
-  
-  // Calculations
-  actualRate: number; // L/hr or L/km
+  // Benchmark application
   benchmarkId: string;
   benchmarkVersion: number;
-  benchmarkValue: number;
+  conditionFactorMultiplier: number;
   expectedFuel: number; // litres
   
-  // Variance
+  // Variance calculation
+  actualRate: number; // L/hr or L/km
   varianceLitres: number;
   variancePercent: number;
   
   // Classification
   resultStatus: VerificationResultStatus;
-  unverifiedReason?: string;
   
-  // Trend
-  rolling7DayVariance?: number;
-  rolling30DayVariance?: number;
+  // Instrument calibration status
+  instrumentsUsed: InstrumentVerificationStatus[];
+  allInstrumentsValid: boolean;
+  
+  // Trend analysis
+  rolling7DayVariance?: number; // litres
+  rolling30DayVariance?: number; // litres
   consecutiveWarningDays?: number;
+  
+  // Revision tracking
+  revisionNumber: number;
+  previousRevisionId?: string;
+  reRunReason?: string;
   
   // Sign-off
   signedOff: boolean;
   signedOffBy?: string;
   signedOffAt?: string;
-  disposition?: string; // For non-within_tolerance results
+  disposition?: string; // For warning/critical/missing
   
-  // Revision tracking
-  revisionNumber: number;
-  previousRevisionId?: string;
-  
+  // Metadata
   createdAt: string;
   updatedAt: string;
 }
 
-export interface InstrumentUsage {
+export interface InstrumentVerificationStatus {
   instrumentId: string;
   instrumentType: string;
   calibrationStatus: CalibrationStatus;
-  readingDate: string;
-  reading: number;
-  convertedVolume?: number; // if dip reading
-  chartVersionUsed?: number; // if tank chart used
-  verified: boolean;
+  isValid: boolean;
+  lastCalibrationDate?: string;
+  nextDueDate?: string;
 }
 
 export interface FullTankWindow {
@@ -258,28 +280,45 @@ export interface FullTankWindow {
   assetId: string;
   openingFillDate: string;
   openingFillLitres: number;
-  openingFillMeterReading: number;
+  openingMeterReading: number; // hour meter or odometer
   
   closingFillDate?: string;
   closingFillLitres?: number;
-  closingFillMeterReading?: number;
+  closingMeterReading?: number;
+  
+  // Calculated when closed
+  totalFuelConsumed?: number;
+  totalUsageHours?: number;
+  totalUsageKilometres?: number;
+  
+  // Daily allocations
+  dailyAllocations: FullTankDailyAllocation[];
   
   status: 'open' | 'closed';
-  
   createdAt: string;
   updatedAt: string;
 }
 
-export interface DailyFuelVerificationSheet {
+export interface FullTankDailyAllocation {
+  date: string;
+  allocatedFuel: number; // litres
+  allocatedUsageHours: number;
+  allocatedUsageKilometres: number;
+  verificationId?: string;
+}
+
+// ============================================================================
+// Daily Sign-off
+// ============================================================================
+
+export interface DailyFuelSignOff {
   id: string;
   date: string;
   siteId?: string;
   plantId?: string;
   
-  rows: DailyFuelVerification[];
-  
   // Summary
-  totalAssets: number;
+  totalAssetDays: number;
   verifiedCount: number;
   withinToleranceCount: number;
   warningCount: number;
@@ -288,9 +327,12 @@ export interface DailyFuelVerificationSheet {
   unverifiedCount: number;
   
   // Sign-off
-  signedOff: boolean;
-  signedOffBy?: string;
-  signedOffAt?: string;
+  signedOffBy: string;
+  signedOffAt: string;
+  signOffDeadline: string; // SLA
+  
+  // Status
+  status: 'pending' | 'signed_off' | 'overdue';
   
   createdAt: string;
   updatedAt: string;
@@ -311,43 +353,38 @@ export type RootCauseCode =
   | 'unrecorded_issue'
   | 'unexplained';
 
-export type CorrectiveActionType = 
-  | 'maintenance_work_order'
-  | 'recalibration'
-  | 'operator_retraining'
-  | 'benchmark_review_request'
-  | 'other';
-
 export interface FuelInvestigation {
   id: string;
   verificationId: string;
-  assetId: string;
-  date: string;
   
   // Root cause
-  rootCause: RootCauseCode;
-  rootCauseDetails?: string;
+  rootCauseCode: RootCauseCode;
+  rootCauseDescription: string;
   
   // Evidence
   evidenceAttachmentIds: string[];
-  evidenceNotes?: string;
+  investigationNotes: string;
   
   // Corrective action
-  correctiveActionType: CorrectiveActionType;
-  correctiveActionDetails: string;
-  workOrderId?: string; // if maintenance work order created
+  correctiveAction: string;
+  correctiveActionType: 'maintenance_work_order' | 'recalibration' | 'operator_retraining' | 'benchmark_review' | 'other';
+  correctiveActionReferenceId?: string; // Link to work order, calibration, etc.
   
-  // Status
-  status: 'open' | 'in_progress' | 'closed';
+  // Variance valuation
+  unexplainedLitres: number;
+  fuelCostPerLitre: number;
+  unexplainedCost: number;
   
   // Personnel
   investigatedBy: string;
-  closedBy?: string; // Must be different from investigatedBy (maker-checker)
-  closedAt?: string;
+  investigatedAt: string;
   
-  // Unexplained variance
-  unexplainedLitres?: number;
-  unexplainedCost?: number;
+  // Closure (maker-checker)
+  closureApprovedBy: string;
+  closureApprovedAt: string;
+  
+  // Status
+  status: 'open' | 'in_progress' | 'closed';
   
   createdAt: string;
   updatedAt: string;
@@ -360,25 +397,37 @@ export interface FuelInvestigation {
 export interface FuelVerificationConfiguration {
   id: string;
   
-  // Daily job
-  dailyJobCutoffTime: string; // e.g., '02:00'
-  dailyJobTimezone: string; // e.g., 'Asia/Kolkata'
-  dailyJobGracePeriodMinutes: number;
+  // Verification job
+  verificationCutoffTime: string; // e.g., '02:00'
+  verificationTimezone: string; // e.g., 'Asia/Kolkata'
+  gracePeriodMinutes: number;
   
   // Sign-off
   signOffDeadlineTime: string; // e.g., '12:00'
-  signOffDeadlineTimezone: string;
+  signOffTimezone: string;
   
   // Trend analysis
-  trendWarningConsecutiveDays: number; // e.g., 3
-  trendCriticalCumulativeLitres: number;
+  trendWarningConsecutiveDays: number; // default 3
+  trendCriticalCumulativeVarianceLitres: number;
   
-  // Review suggestions
-  reviewSuggestionMarginPercent: number; // e.g., 15%
-  reviewSuggestionPeriodDays: number; // e.g., 30
+  // Telematics
+  telematicsMismatchTolerancePercent: number;
   
-  // Cross-checks
-  telematicsMismatchTolerancePercent: number; // e.g., 10%
+  // Benchmark review
+  benchmarkReviewMarginPercent: number; // e.g., 15%
+  benchmarkReviewPeriodDays: number; // e.g., 30
+  
+  // Field checks
+  fieldCheckFrequencyDays: number; // e.g., 7
+  
+  // Minimum usage
+  defaultMinimumUsageHours: number; // default 2
+  defaultMinimumUsageKilometres: number; // default 20
+  
+  // Tolerances
+  defaultWarningTolerancePercent: number; // default 10
+  defaultCriticalTolerancePercent: number; // default 20
+  defaultAbsoluteMinimumToleranceLitres: number; // default 5
   
   createdAt: string;
   updatedAt: string;
