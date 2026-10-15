@@ -26,6 +26,9 @@ import DailyVerificationSheet from './pages/DailyVerificationSheet';
 import AssetFuelHistory from './pages/AssetFuelHistory';
 import BenchmarkRegister from './pages/BenchmarkRegister';
 import CalibrationRegister from './pages/CalibrationRegister';
+import WorkOrderList from './pages/WorkOrderList';
+import PMPlanList from './pages/PMPlanList';
+import ReliabilityDashboard from './pages/ReliabilityDashboard';
 
 export default function App() {
   return (
@@ -59,6 +62,9 @@ export default function App() {
           <Route path="/fuel/benchmarks" element={<BenchmarkRegister />} />
           <Route path="/fuel/calibrations" element={<CalibrationRegister />} />
           <Route path="/assets/:id/fuel-history" element={<AssetFuelHistory />} />
+          <Route path="/maintenance/work-orders" element={<WorkOrderList />} />
+          <Route path="/maintenance/pm-plans" element={<PMPlanList />} />
+          <Route path="/maintenance/reliability" element={<ReliabilityDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>

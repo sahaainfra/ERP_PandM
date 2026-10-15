@@ -56,6 +56,9 @@ import * as benchmarkService from './benchmarkService';
 import * as verificationEngineService from './verificationEngine';
 import * as verificationJobService from './verificationJob';
 import * as investigationService from './investigationService';
+import * as pmPlanService from './pmPlanService';
+import * as workOrderService from './workOrderService';
+import * as reliabilityMetricsService from './reliabilityMetricsService';
 
 export {
   mastersService as masters,
@@ -87,6 +90,9 @@ export {
   verificationEngineService as verificationEngine,
   verificationJobService as verificationJob,
   investigationService as investigation,
+  pmPlanService as pmPlan,
+  workOrderService as workOrder,
+  reliabilityMetricsService as reliabilityMetrics,
 };
 
 // ============================================================================
@@ -103,6 +109,7 @@ import * as assetCategories from './assetCategories';
 import * as workflowConfig from './workflowConfig';
 import * as fuelMasters from './fuelMasters';
 import * as benchmark from './benchmarkService';
+import * as pmPlan from './pmPlanService';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -154,6 +161,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed fuel benchmarks (Part 10)
   await benchmark.seedDefaultBenchmarks();
   logger.info('Fuel benchmarks seeded');
+
+  // Seed PM plans (Part 11)
+  await pmPlan.seedDefaultPMPlans();
+  logger.info('PM plans seeded');
 
   logger.info('Platform initialization complete');
 }

@@ -290,3 +290,41 @@
 - **Rationale**: Field operations require mobile access, large touch targets for ease of use
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-057: PM Interval Calculation from Approved Readings *(Added Part 11)*
+- **Decision**: PM due dates calculated from approved logbook readings only
+- **Rationale**: Ensures accuracy and prevents premature or delayed maintenance
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-058: Safety-Critical Hold Enforcement *(Added Part 11)*
+- **Decision**: Safety-critical defects automatically block asset operations
+- **Rationale**: Prevents unsafe equipment operation
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-059: Maker-Checker Release *(Added Part 11)*
+- **Decision**: Technician cannot release their own work order
+- **Rationale**: Ensures independent verification of work quality
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-060: Single Inventory Ledger for Parts *(Added Part 11)*
+- **Decision**: Parts managed through existing inventory module, not separate ledger
+- **Rationale**: Prevents data duplication, ensures consistency
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-061: Reliability Metrics with Confidence Levels *(Added Part 11)*
+- **Decision**: Metrics show confidence level based on data sufficiency
+- **Rationale**: Prevents misleading conclusions from insufficient data
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-062: Unexplained Variance Valuation *(Added Part 11)*
+- **Decision**: Unexplained maintenance costs retained and valued
+- **Rationale**: Ensures financial accountability
+- **Date**: 2026-01-28
+- **Status**: Active

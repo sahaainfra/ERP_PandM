@@ -15,7 +15,7 @@
 | 08 | Senior Authorization Workflow & Audit Controls | 2 | ✅ Complete | 2026-01-28 | [part-08-report.md](parts/part-08-report.md) |
 | 09 | Fuel Procurement, Storage, Issue & Stock Reconciliation | 3 | ✅ Complete | 2026-01-28 | [part-09-report.md](parts/part-09-report.md) |
 | 10 | Daily Calibrated Fuel Consumption Verification | 3 | ✅ Complete | 2026-01-28 | [part-10-report.md](parts/part-10-report.md) |
-| 11 | Team Chat: Backend, Persistence, File Sharing | 3 | 🔲 Not started | — | — |
+| 11 | Preventive & Corrective Maintenance, Workshop, Spare Parts & Reliability | 3 | ✅ Complete | 2026-01-28 | [part-11-report.md](parts/part-11-report.md) |
 | 12 | Finance: Chart of Accounts, Vouchers, Posting | 4 | 🔲 Not started | — | — |
 | 13 | Finance: Project Costing, Budget vs Actual | 4 | 🔲 Not started | — | — |
 | 14 | Finance: GST, E-Invoice, E-Way Bill | 4 | 🔲 Not started | — | — |
