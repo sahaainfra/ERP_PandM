@@ -20,6 +20,8 @@ import MobileSubmission from './pages/MobileSubmission';
 import OfflineQueueManagement from './pages/OfflineQueueManagement';
 import PendingApprovals from './pages/PendingApprovals';
 import ApproverReview from './pages/ApproverReview';
+import MobileFuelIssue from './pages/MobileFuelIssue';
+import TankDashboard from './pages/TankDashboard';
 
 export default function App() {
   return (
@@ -47,6 +49,8 @@ export default function App() {
           <Route path="/submissions/offline" element={<OfflineQueueManagement />} />
           <Route path="/approvals/pending" element={<PendingApprovals />} />
           <Route path="/approvals/:id" element={<ApproverReview />} />
+          <Route path="/fuel/issue" element={<MobileFuelIssue />} />
+          <Route path="/fuel/tanks" element={<TankDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -13,6 +13,8 @@ const navItems = [
   { path: '/operators', label: 'Operators', icon: Truck },
   { path: '/fleet', label: 'Fleet & Equipment', icon: Truck },
   { path: '/fuel', label: 'Fuel Management', icon: Fuel },
+  { path: '/fuel/issue', label: 'Issue Fuel', icon: Fuel },
+  { path: '/fuel/tanks', label: 'Tank Dashboard', icon: Fuel },
   { path: '/rmc', label: 'RMC Operations', icon: Factory },
   { path: '/chat', label: 'Team Chat', icon: MessageSquare },
   { path: '/finance', label: 'Finance & Costing', icon: DollarSign },

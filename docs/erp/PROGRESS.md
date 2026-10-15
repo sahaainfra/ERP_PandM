@@ -12,8 +12,8 @@
 | 05 | Asset Lifecycle, Allocation, Operators & Drivers | 2 | ✅ Complete | 2026-01-28 | [part-05-report.md](parts/part-05-report.md) |
 | 06 | Daily Equipment Logbook | 2 | ✅ Complete | 2026-01-28 | [part-06-report.md](parts/part-06-report.md) |
 | 07 | Mandatory Operator Readings & Photo Evidence | 2 | ✅ Complete | 2026-01-28 | [part-07-report.md](parts/part-07-report.md) |
-| 08 | RMC Orders & Batch Production | 3 | 🔲 Not started | — | — |
-| 09 | RMC Quality: Slump, Cubes, NDT | 3 | 🔲 Not started | — | — |
+| 08 | Senior Authorization Workflow & Audit Controls | 2 | ✅ Complete | 2026-01-28 | [part-08-report.md](parts/part-08-report.md) |
+| 09 | Fuel Procurement, Storage, Issue & Stock Reconciliation | 3 | ✅ Complete | 2026-01-28 | [part-09-report.md](parts/part-09-report.md) |
 | 10 | RMC Dispatch & Transit Mixer Tracking | 3 | 🔲 Not started | — | — |
 | 11 | Team Chat: Backend, Persistence, File Sharing | 3 | 🔲 Not started | — | — |
 | 12 | Finance: Chart of Accounts, Vouchers, Posting | 4 | 🔲 Not started | — | — |

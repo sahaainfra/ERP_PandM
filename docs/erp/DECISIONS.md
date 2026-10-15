@@ -258,3 +258,35 @@
 - **Rationale**: Metadata can be spoofed, not conclusive proof
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-041: Single Inventory Ledger *(Added Part 09)*
+- **Decision**: Fuel stock held in existing inventory ledger, not separate fuel ledger
+- **Rationale**: Prevents data duplication, ensures consistency with accounting
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-042: Calibrated Measuring Points *(Added Part 09)*
+- **Decision**: All fuel measurements use calibrated instruments with strapping charts
+- **Rationale**: Ensures accuracy for consumption verification and cost allocation
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-043: Configurable Tolerances *(Added Part 09)*
+- **Decision**: Variance tolerances configurable per operation (receipt, issue, reconciliation)
+- **Rationale**: Allows adaptation to different fuel types, equipment, and operational requirements
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-044: Automated Daily Reconciliation *(Added Part 09)*
+- **Decision**: Daily reconciliation job runs automatically for all storage points
+- **Rationale**: Ensures timely detection of variances, reduces manual effort
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-045: Mobile-First Issue Interface *(Added Part 09)*
+- **Decision**: Fuel issue screen designed for mobile use by attendants
+- **Rationale**: Field operations require mobile access, large touch targets for ease of use
+- **Date**: 2026-01-28
+- **Status**: Active

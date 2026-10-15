@@ -9,7 +9,7 @@
 // Common Types
 // ============================================================================
 
-export type Status = 'draft' | 'submitted' | 'pending_approval' | 'pending_evidence' | 'approved' | 'rejected' | 'returned' | 'posted' | 'reversed';
+export type Status = 'draft' | 'submitted' | 'pending_approval' | 'pending_evidence' | 'approved' | 'rejected' | 'returned' | 'posted' | 'reversed' | 'completed';
 export type DataSource = 'manual' | 'imported' | 'integrated_live' | 'integrated_delayed' | 'system_calculated';
 
 // ============================================================================

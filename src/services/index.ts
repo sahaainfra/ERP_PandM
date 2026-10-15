@@ -46,6 +46,11 @@ import * as operatorManagementService from './operatorManagement';
 import * as workflowConfigService from './workflowConfig';
 import * as approvalReviewService from './approvalReview';
 import * as amendmentService from './amendmentService';
+import * as fuelMastersService from './fuelMasters';
+import * as fuelReceiptsService from './fuelReceipts';
+import * as fuelIssuesService from './fuelIssues';
+import * as fuelTransfersService from './fuelTransfers';
+import * as tankReconciliationService from './tankReconciliation';
 
 export {
   mastersService as masters,
@@ -67,6 +72,11 @@ export {
   workflowConfigService as workflowConfig,
   approvalReviewService as approvalReview,
   amendmentService as amendments,
+  fuelMastersService as fuelMasters,
+  fuelReceiptsService as fuelReceipts,
+  fuelIssuesService as fuelIssues,
+  fuelTransfersService as fuelTransfers,
+  tankReconciliationService as tankReconciliation,
 };
 
 // ============================================================================
@@ -81,6 +91,7 @@ import * as permissions from './permissions';
 import * as approvalMatrix from './approvalMatrix';
 import * as assetCategories from './assetCategories';
 import * as workflowConfig from './workflowConfig';
+import * as fuelMasters from './fuelMasters';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -124,6 +135,10 @@ export async function initializePlatform(): Promise<void> {
   await workflowConfig.seedDefaultValidationFlags();
   await workflowConfig.seedDefaultSLAs();
   logger.info('Workflow configuration seeded');
+
+  // Seed fuel masters (Part 09)
+  await fuelMasters.seedDefaultFuelTypes();
+  logger.info('Fuel masters seeded');
 
   logger.info('Platform initialization complete');
 }
