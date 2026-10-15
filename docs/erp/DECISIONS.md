@@ -86,3 +86,47 @@
 - **Rationale**: Native GitHub integration, free for public repos, supports all required tools (Node.js, PostgreSQL, Docker)
 - **Date**: 2026-01-28
 - **Status**: Proposed (to be confirmed in Part 02)
+
+---
+
+## DEC-014: Storage Abstraction Layer *(Added Part 02)*
+- **Decision**: Implement all services with a storage abstraction layer (InMemoryAdapter) that can be swapped for PostgreSQL
+- **Rationale**: This is a frontend SPA project without a backend runtime. The abstraction allows services to work immediately for demo/testing while being ready for a real database backend in Part 02b+
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-015: Service Module Structure *(Added Part 02)*
+- **Decision**: Organize services as TypeScript modules under `src/services/` with clear separation: types, storage, masters, numbering, audit, attachments, workflow, alerts, idempotency, api
+- **Rationale**: Each service is independently testable and can be consumed by any module. The index.ts provides a single entry point with initialization.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-016: Append-Only Audit Enforcement *(Added Part 02)*
+- **Decision**: Audit records use an append-only storage adapter that blocks update and delete operations
+- **Rationale**: Audit integrity is critical for compliance. The adapter enforces this at the storage layer, not just the application layer.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-017: Signed URL Pattern for Attachments *(Added Part 02)*
+- **Decision**: Attachments are accessed via short-lived signed URLs (15 min expiry) after permission check on parent record
+- **Rationale**: No public buckets. Every download requires authorization. URLs expire to limit exposure.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-018: Separation of Duties in Workflow *(Added Part 02)*
+- **Decision**: The submitter of a record can never approve it. Enforced in the workflow engine, not just the UI.
+- **Rationale**: Audit compliance requirement. Prevents self-approval fraud.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-019: Idempotency Key Pattern *(Added Part 02)*
+- **Decision**: All write APIs accept an idempotency key. Duplicate keys with same payload return cached response. Different payload with same key throws error.
+- **Rationale**: Prevents duplicate records from retries, offline sync, and network failures. Critical for financial records.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-020: Alert De-duplication Window *(Added Part 02)*
+- **Decision**: Same alert code + entity won't fire again within 1 hour (configurable)
+- **Rationale**: Prevents alert fatigue from repeated threshold breaches. Users get one alert per entity per hour.
+- **Date**: 2026-01-28
+- **Status**: Active
