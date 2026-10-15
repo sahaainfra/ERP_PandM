@@ -39,6 +39,8 @@ import * as rolesService from './roles';
 import * as permissionsService from './permissions';
 import * as delegationService from './delegation';
 import * as approvalMatrixService from './approvalMatrix';
+import * as assetCategoriesService from './assetCategories';
+import * as assetsService from './assets';
 
 export {
   mastersService as masters,
@@ -53,6 +55,8 @@ export {
   permissionsService as permissions,
   delegationService as delegation,
   approvalMatrixService as approvalMatrix,
+  assetCategoriesService as assetCategories,
+  assetsService as assets,
 };
 
 // ============================================================================
@@ -65,6 +69,7 @@ import * as masters from './masters';
 import * as roles from './roles';
 import * as permissions from './permissions';
 import * as approvalMatrix from './approvalMatrix';
+import * as assetCategories from './assetCategories';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -98,6 +103,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed default approval rules (Part 03)
   await approvalMatrix.seedDefaultApprovalRules();
   logger.info('Default approval rules seeded');
+
+  // Seed asset categories (Part 04)
+  await assetCategories.seedAssetCategories();
+  logger.info('Asset categories seeded');
 
   logger.info('Platform initialization complete');
 }

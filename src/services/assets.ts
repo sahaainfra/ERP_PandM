@@ -1,47 +1,99 @@
 /**
  * Part 04 — Asset Master Service
- *
- * Authoritative register for all machines, vehicles, plant items and equipment units.
- * Linked to fixed-asset and accounting records (never duplicates financial data).
  */
 
 import { storage } from './storage';
-import { Asset, AssetStatus, AssetOwnership } from '../types';
-import { generateId } from './utils';
+import { Asset, AssetStatus, ComplianceDocument, MeterReplacement, AssetAllocation, BulkImportResult, BulkImportError, BulkImportWarning, BulkImportRow } from './assetTypes';
+import { generateId, getCurrentFinancialYear } from './utils';
 import { recordAudit } from './audit';
-import { getAssetCategoryByCode } from './assetCategories';
+import { getCategory, validateSubCategory } from './assetCategories';
+import { generateNumber } from './numbering';
+import { hasPermission } from './permissions';
 
 const assetsStore = storage.getAdapter<Asset>('assets');
-
-// ============================================================================
-// Asset CRUD
-// ============================================================================
+const allocationsStore = storage.getAdapter<AssetAllocation>('asset_allocations');
 
 /**
- * Create a new asset.
+ * Create a new asset
  */
 export async function createAsset(
-  data: Omit<Asset, 'id' | 'createdAt' | 'updatedAt'>,
-  userId: string
+  data: Omit<Asset, 'id' | 'createdAt' | 'updatedAt' | 'status_' | 'dataSource' | 'statusChangedAt' | 'statusChangedBy' | 'meterReplacements'>,
+  userId: string,
+  requestId: string
 ): Promise<Asset> {
-  // Validate unique constraints
-  await validateUniqueConstraints(data);
+  // Check permissions
+  await hasPermission({
+    userId,
+    role: 'company_admin', // TODO: Get from user context
+    action: 'create',
+    resource: 'asset',
+  });
+
+  // Validate category and subcategory
+  const categoryValid = await validateSubCategory(data.category, data.subCategory);
+  if (!categoryValid) {
+    throw new Error(`Invalid subcategory ${data.subCategory} for category ${data.category}`);
+  }
+
+  // Check for duplicates
+  const existingByCode = await assetsStore.findOne({ assetCode: data.assetCode } as Partial<Asset>);
+  if (existingByCode) {
+    throw new Error(`Asset with code ${data.assetCode} already exists`);
+  }
+
+  const existingByReg = await assetsStore.findOne({ 
+    registrationNumber: data.registrationNumber,
+    country: data.country 
+  } as Partial<Asset>);
+  if (existingByReg) {
+    throw new Error(`Asset with registration number ${data.registrationNumber} already exists in ${data.country}`);
+  }
+
+  const existingBySerial = await assetsStore.findOne({ serialNumber: data.serialNumber } as Partial<Asset>);
+  if (existingBySerial) {
+    throw new Error(`Asset with serial number ${data.serialNumber} already exists`);
+  }
 
   // Check for near-duplicates (fuzzy match)
-  const nearDuplicates = await detectNearDuplicates(data);
-  if (nearDuplicates.length > 0) {
-    console.warn(`Near-duplicate assets detected: ${nearDuplicates.map(a => a.assetCode).join(', ')}`);
+  const nearDuplicates = await assetsStore.findAll();
+  const fuzzyMatch = nearDuplicates.find(a => 
+    a.make === data.make && 
+    a.model === data.model && 
+    a.serialNumber === data.serialNumber
+  );
+  if (fuzzyMatch) {
+    throw new Error(`Potential duplicate found: Asset ${fuzzyMatch.assetCode} has same make, model, and serial number`);
   }
 
   const asset: Asset = {
     ...data,
     id: generateId(),
-    status: data.status || 'available',
+    status_: 'approved',
+    dataSource: 'manual',
+    statusChangedAt: new Date().toISOString(),
+    statusChangedBy: userId,
+    meterReplacements: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    createdBy: userId,
+    updatedBy: userId,
   };
 
   await assetsStore.create(asset);
+
+  // Create initial allocation if project/site/plant specified
+  if (data.currentProjectId || data.currentSiteId || data.currentPlantId) {
+    await createAllocation({
+      assetId: asset.id,
+      projectId: data.currentProjectId,
+      siteId: data.currentSiteId,
+      plantId: data.currentPlantId,
+      departmentId: data.departmentId,
+      startDate: new Date().toISOString(),
+      allocatedBy: userId,
+      reason: 'Initial allocation',
+    });
+  }
 
   // Audit
   await recordAudit({
@@ -49,47 +101,52 @@ export async function createAsset(
     entityId: asset.id,
     action: 'create',
     before: null,
-    after: asset as any,
+    after: asset as unknown as Record<string, unknown>,
     actorId: userId,
-    actorRole: 'fleet_manager',
-    requestId: generateId(),
+    actorRole: 'company_admin', // TODO: Get from context
+    requestId,
+    reason: 'Asset created',
   });
 
   return asset;
 }
 
 /**
- * Get asset by ID.
+ * Get asset by ID
  */
 export async function getAsset(id: string): Promise<Asset | null> {
   return assetsStore.findById(id);
 }
 
 /**
- * List assets with filters.
+ * Get asset by code
+ */
+export async function getAssetByCode(assetCode: string): Promise<Asset | null> {
+  return assetsStore.findOne({ assetCode } as Partial<Asset>);
+}
+
+/**
+ * List all assets with filters
  */
 export async function listAssets(filters?: {
-  companyId?: string;
-  categoryId?: string;
+  category?: string;
+  subCategory?: string;
   status?: AssetStatus;
-  ownership?: AssetOwnership;
   projectId?: string;
   siteId?: string;
   plantId?: string;
+  ownershipType?: string;
 }): Promise<Asset[]> {
   let assets = await assetsStore.findAll();
 
-  if (filters?.companyId) {
-    assets = assets.filter(a => a.companyId === filters.companyId);
+  if (filters?.category) {
+    assets = assets.filter(a => a.category === filters.category);
   }
-  if (filters?.categoryId) {
-    assets = assets.filter(a => a.categoryId === filters.categoryId);
+  if (filters?.subCategory) {
+    assets = assets.filter(a => a.subCategory === filters.subCategory);
   }
   if (filters?.status) {
     assets = assets.filter(a => a.status === filters.status);
-  }
-  if (filters?.ownership) {
-    assets = assets.filter(a => a.ownership === filters.ownership);
   }
   if (filters?.projectId) {
     assets = assets.filter(a => a.currentProjectId === filters.projectId);
@@ -100,37 +157,40 @@ export async function listAssets(filters?: {
   if (filters?.plantId) {
     assets = assets.filter(a => a.currentPlantId === filters.plantId);
   }
+  if (filters?.ownershipType) {
+    assets = assets.filter(a => a.ownershipType === filters.ownershipType);
+  }
 
   return assets;
 }
 
 /**
- * Update asset.
+ * Update asset
  */
 export async function updateAsset(
   id: string,
   updates: Partial<Asset>,
-  userId: string
+  userId: string,
+  requestId: string
 ): Promise<Asset> {
-  const existing = await assetsStore.findById(id);
-  if (!existing) {
+  const asset = await assetsStore.findById(id);
+  if (!asset) {
     throw new Error(`Asset ${id} not found`);
   }
 
-  // Validate unique constraints if identity fields changed
-  if (updates.assetCode || updates.registrationNumber || updates.serialNumber) {
-    const merged = { ...existing, ...updates };
-    await validateUniqueConstraints(merged, id);
-  }
+  // Check permissions
+  await hasPermission({
+    userId,
+    role: 'company_admin', // TODO: Get from user context
+    action: 'edit',
+    resource: 'asset',
+  });
 
-  // Validate status change
-  if (updates.status && updates.status !== existing.status) {
-    await validateStatusChange(existing, updates.status);
-  }
-
+  const before = { ...asset };
   const updated = await assetsStore.update(id, {
     ...updates,
     updatedAt: new Date().toISOString(),
+    updatedBy: userId,
   });
 
   // Audit
@@ -138,35 +198,65 @@ export async function updateAsset(
     entityType: 'Asset',
     entityId: id,
     action: 'update',
-    before: existing as any,
-    after: updated as any,
+    before: before as unknown as Record<string, unknown>,
+    after: updated as unknown as Record<string, unknown>,
     actorId: userId,
-    actorRole: 'fleet_manager',
-    requestId: generateId(),
+    actorRole: 'company_admin', // TODO: Get from context
+    requestId,
+    reason: 'Asset updated',
   });
 
   return updated;
 }
 
 /**
- * Delete asset (soft delete by changing status to 'disposed').
+ * Change asset status
  */
-export async function disposeAsset(
+export async function changeAssetStatus(
   id: string,
+  newStatus: AssetStatus,
+  reason: string,
   userId: string,
-  reason: string
+  requestId: string
 ): Promise<Asset> {
-  const existing = await assetsStore.findById(id);
-  if (!existing) {
+  const asset = await assetsStore.findById(id);
+  if (!asset) {
     throw new Error(`Asset ${id} not found`);
   }
 
-  // Check for open work orders or allocations
-  // (In production, would query work_orders and allocations tables)
+  // Check permissions
+  await hasPermission({
+    userId,
+    role: 'company_admin', // TODO: Get from user context
+    action: 'edit',
+    resource: 'asset',
+  });
 
+  // Validate status transition
+  const validTransitions: Record<AssetStatus, AssetStatus[]> = {
+    available: ['deployed', 'under_maintenance', 'standby', 'disposed'],
+    deployed: ['available', 'idle', 'under_maintenance', 'breakdown', 'in_transit', 'disposed'],
+    idle: ['deployed', 'under_maintenance', 'standby', 'disposed'],
+    standby: ['deployed', 'under_maintenance', 'disposed'],
+    under_maintenance: ['available', 'breakdown', 'out_of_service'],
+    breakdown: ['under_maintenance', 'out_of_service'],
+    out_of_service: ['under_maintenance', 'disposed'],
+    in_transit: ['deployed', 'available'],
+    disposed: [],
+  };
+
+  if (!validTransitions[asset.status].includes(newStatus)) {
+    throw new Error(`Invalid status transition from ${asset.status} to ${newStatus}`);
+  }
+
+  const before = { ...asset };
   const updated = await assetsStore.update(id, {
-    status: 'disposed',
+    status: newStatus,
+    statusChangedAt: new Date().toISOString(),
+    statusChangedBy: userId,
+    statusChangeReason: reason,
     updatedAt: new Date().toISOString(),
+    updatedBy: userId,
   });
 
   // Audit
@@ -174,223 +264,325 @@ export async function disposeAsset(
     entityType: 'Asset',
     entityId: id,
     action: 'update',
-    before: { status: existing.status },
-    after: { status: 'disposed' },
+    before: before as unknown as Record<string, unknown>,
+    after: updated as unknown as Record<string, unknown>,
     actorId: userId,
-    actorRole: 'fleet_manager',
-    requestId: generateId(),
-    reason,
+    actorRole: 'company_admin', // TODO: Get from context
+    requestId,
+    reason: `Status changed from ${before.status} to ${newStatus}: ${reason}`,
   });
 
   return updated;
 }
 
-// ============================================================================
-// Validation
-// ============================================================================
-
 /**
- * Validate unique constraints on asset code, registration number, serial number.
+ * Replace meter
  */
-async function validateUniqueConstraints(
-  data: Partial<Asset>,
-  excludeId?: string
-): Promise<void> {
-  const allAssets = await assetsStore.findAll();
+export async function replaceMeter(
+  assetId: string,
+  meterType: 'hour_meter' | 'odometer',
+  oldMeterFinalReading: number,
+  newMeterStartReading: number,
+  reason: string,
+  approvedBy: string,
+  requestId: string
+): Promise<Asset> {
+  const asset = await assetsStore.findById(assetId);
+  if (!asset) {
+    throw new Error(`Asset ${assetId} not found`);
+  }
 
-  // Asset code must be unique
-  if (data.assetCode) {
-    const duplicate = allAssets.find(
-      a => a.assetCode === data.assetCode && a.id !== excludeId
-    );
-    if (duplicate) {
-      throw new Error(`Asset code '${data.assetCode}' already exists`);
+  // Check permissions
+  await hasPermission({
+    userId: approvedBy,
+    role: 'fleet_manager', // TODO: Get from user context
+    action: 'approve',
+    resource: 'asset',
+  });
+
+  // Validate readings
+  if (meterType === 'hour_meter' && asset.currentHourMeter !== undefined) {
+    if (oldMeterFinalReading < asset.currentHourMeter) {
+      throw new Error(`Old meter final reading (${oldMeterFinalReading}) cannot be less than current reading (${asset.currentHourMeter})`);
     }
   }
 
-  // Registration number must be unique per country
-  if (data.registrationNumber && data.country) {
-    const duplicate = allAssets.find(
-      a =>
-        a.registrationNumber === data.registrationNumber &&
-        a.country === data.country &&
-        a.id !== excludeId
-    );
-    if (duplicate) {
-      throw new Error(
-        `Registration number '${data.registrationNumber}' already exists in ${data.country}`
-      );
+  if (meterType === 'odometer' && asset.currentOdometer !== undefined) {
+    if (oldMeterFinalReading < asset.currentOdometer) {
+      throw new Error(`Old meter final reading (${oldMeterFinalReading}) cannot be less than current reading (${asset.currentOdometer})`);
     }
   }
 
-  // Serial/chassis number must be unique
-  if (data.serialNumber) {
-    const duplicate = allAssets.find(
-      a => a.serialNumber === data.serialNumber && a.id !== excludeId
-    );
-    if (duplicate) {
-      throw new Error(`Serial number '${data.serialNumber}' already exists`);
-    }
+  if (newMeterStartReading < oldMeterFinalReading) {
+    throw new Error(`New meter start reading (${newMeterStartReading}) cannot be less than old meter final reading (${oldMeterFinalReading})`);
   }
+
+  const replacement: MeterReplacement = {
+    id: generateId(),
+    meterType,
+    oldMeterFinalReading,
+    newMeterStartReading,
+    replacementDate: new Date().toISOString(),
+    reason,
+    approvedBy,
+    approvedAt: new Date().toISOString(),
+  };
+
+  const before = { ...asset };
+  const updated = await assetsStore.update(assetId, {
+    meterReplacements: [...asset.meterReplacements, replacement],
+    [meterType === 'hour_meter' ? 'currentHourMeter' : 'currentOdometer']: newMeterStartReading,
+    updatedAt: new Date().toISOString(),
+    updatedBy: approvedBy,
+  });
+
+  // Audit
+  await recordAudit({
+    entityType: 'Asset',
+    entityId: assetId,
+    action: 'update',
+    before: before as unknown as Record<string, unknown>,
+    after: updated as unknown as Record<string, unknown>,
+    actorId: approvedBy,
+    actorRole: 'fleet_manager', // TODO: Get from context
+    requestId,
+    reason: `Meter replacement: ${meterType} - ${reason}`,
+  });
+
+  return updated;
 }
 
 /**
- * Detect near-duplicates (fuzzy match on make+model+serial).
+ * Add compliance document
  */
-async function detectNearDuplicates(data: Partial<Asset>): Promise<Asset[]> {
-  if (!data.make || !data.model || !data.serialNumber) {
-    return [];
+export async function addComplianceDocument(
+  assetId: string,
+  document: Omit<ComplianceDocument, 'id' | 'alertSent'>,
+  userId: string,
+  requestId: string
+): Promise<Asset> {
+  const asset = await assetsStore.findById(assetId);
+  if (!asset) {
+    throw new Error(`Asset ${assetId} not found`);
   }
 
-  const allAssets = await assetsStore.findAll();
+  const newDoc: ComplianceDocument = {
+    ...document,
+    id: generateId(),
+    alertSent: false,
+  };
 
-  return allAssets.filter(a => {
-    // Fuzzy match: same make + model + similar serial
-    if (a.make !== data.make || a.model !== data.model) {
-      return false;
+  const before = { ...asset };
+  const updated = await assetsStore.update(assetId, {
+    documents: [...asset.documents, newDoc],
+    updatedAt: new Date().toISOString(),
+    updatedBy: userId,
+  });
+
+  // Audit
+  await recordAudit({
+    entityType: 'Asset',
+    entityId: assetId,
+    action: 'update',
+    before: before as unknown as Record<string, unknown>,
+    after: updated as unknown as Record<string, unknown>,
+    actorId: userId,
+    actorRole: 'company_admin', // TODO: Get from context
+    requestId,
+    reason: `Added compliance document: ${document.type}`,
+  });
+
+  return updated;
+}
+
+/**
+ * Create allocation
+ */
+export async function createAllocation(data: Omit<AssetAllocation, 'id' | 'createdAt'>): Promise<AssetAllocation> {
+  // End previous allocation if exists
+  const previousAllocations = await allocationsStore.findAll({ assetId: data.assetId } as Partial<AssetAllocation>);
+  const activeAllocation = previousAllocations.find(a => !a.endDate);
+  if (activeAllocation) {
+    await allocationsStore.update(activeAllocation.id, {
+      endDate: data.startDate,
+    });
+  }
+
+  const allocation: AssetAllocation = {
+    ...data,
+    id: generateId(),
+    createdAt: new Date().toISOString(),
+  };
+
+  return allocationsStore.create(allocation);
+}
+
+/**
+ * Get allocation history
+ */
+export async function getAllocationHistory(assetId: string): Promise<AssetAllocation[]> {
+  const allocations = await allocationsStore.findAll({ assetId } as Partial<AssetAllocation>);
+  return allocations.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+}
+
+/**
+ * Bulk import assets
+ */
+export async function bulkImportAssets(
+  rows: BulkImportRow[],
+  dryRun: boolean,
+  userId: string,
+  requestId: string
+): Promise<BulkImportResult> {
+  const errors: BulkImportError[] = [];
+  const warnings: BulkImportWarning[] = [];
+  let validRows = 0;
+
+  // Validate all rows first
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    const rowNum = i + 1;
+
+    // Required fields
+    if (!row.assetCode) {
+      errors.push({ row: rowNum, field: 'assetCode', message: 'Asset code is required' });
+    }
+    if (!row.registrationNumber) {
+      errors.push({ row: rowNum, field: 'registrationNumber', message: 'Registration number is required' });
+    }
+    if (!row.serialNumber) {
+      errors.push({ row: rowNum, field: 'serialNumber', message: 'Serial number is required' });
+    }
+    if (!row.make) {
+      errors.push({ row: rowNum, field: 'make', message: 'Make is required' });
+    }
+    if (!row.model) {
+      errors.push({ row: rowNum, field: 'model', message: 'Model is required' });
+    }
+    if (!row.year || row.year < 1900 || row.year > new Date().getFullYear() + 1) {
+      errors.push({ row: rowNum, field: 'year', message: 'Valid year is required', value: String(row.year) });
     }
 
-    // Check if serial is similar (e.g., differs by 1-2 characters)
-    if (!a.serialNumber || !data.serialNumber) {
-      return false;
+    // Check for duplicates in import
+    const duplicateInImport = rows.findIndex((r, idx) => idx !== i && r.assetCode === row.assetCode);
+    if (duplicateInImport !== -1) {
+      errors.push({ row: rowNum, field: 'assetCode', message: `Duplicate asset code in import (also in row ${duplicateInImport + 1})`, value: row.assetCode });
     }
 
-    const similarity = calculateStringSimilarity(a.serialNumber, data.serialNumber);
-    return similarity > 0.8; // 80% similar
+    // Check against existing assets
+    const existingByCode = await assetsStore.findOne({ assetCode: row.assetCode } as Partial<Asset>);
+    if (existingByCode) {
+      errors.push({ row: rowNum, field: 'assetCode', message: 'Asset code already exists', value: row.assetCode });
+    }
+
+    const existingByReg = await assetsStore.findOne({ 
+      registrationNumber: row.registrationNumber,
+      country: row.country || 'India'
+    } as Partial<Asset>);
+    if (existingByReg) {
+      errors.push({ row: rowNum, field: 'registrationNumber', message: 'Registration number already exists', value: row.registrationNumber });
+    }
+
+    // Check for near-duplicates
+    const nearDuplicate = await assetsStore.findOne({
+      make: row.make,
+      model: row.model,
+      serialNumber: row.serialNumber,
+    } as Partial<Asset>);
+    if (nearDuplicate) {
+      warnings.push({ 
+        row: rowNum, 
+        field: 'serialNumber', 
+        message: `Potential duplicate: ${nearDuplicate.assetCode} has same make, model, and serial`, 
+        value: row.serialNumber 
+      });
+    }
+
+    if (errors.filter(e => e.row === rowNum).length === 0) {
+      validRows++;
+    }
+  }
+
+  const result: BulkImportResult = {
+    totalRows: rows.length,
+    validRows,
+    invalidRows: errors.length,
+    errors,
+    warnings,
+    dryRun,
+    imported: false,
+  };
+
+  // If not dry run and no errors, import
+  if (!dryRun && errors.length === 0) {
+    for (const row of rows) {
+      await createAsset({
+        assetCode: row.assetCode,
+        registrationNumber: row.registrationNumber,
+        country: row.country || 'India',
+        make: row.make,
+        model: row.model,
+        variant: row.variant,
+        year: row.year,
+        serialNumber: row.serialNumber,
+        chassisNumber: undefined,
+        engineNumber: undefined,
+        category: row.category,
+        subCategory: row.subCategory,
+        colour: undefined,
+        ownershipType: row.ownershipType,
+        purchaseDate: undefined,
+        purchaseCost: undefined,
+        documents: [],
+        status: 'available',
+        currentHourMeter: undefined,
+        currentOdometer: undefined,
+        tankCapacity: row.tankCapacity,
+        fuelType: row.fuelType,
+        telematicsDeviceId: undefined,
+        telematicsProvider: undefined,
+        simNumber: undefined,
+        fuelSensorPresent: false,
+        photographs: [],
+      } as any, userId, requestId);
+    }
+    result.imported = true;
+    result.importedAt = new Date().toISOString();
+  }
+
+  return result;
+}
+
+/**
+ * Check for expiring documents
+ */
+export async function checkExpiringDocuments(leadTimeDays: number = 30): Promise<Asset[]> {
+  const assets = await assetsStore.findAll();
+  const now = new Date();
+  const leadTime = leadTimeDays * 24 * 60 * 60 * 1000;
+
+  return assets.filter(asset => {
+    return asset.documents.some(doc => {
+      const expiryDate = new Date(doc.expiryDate);
+      const timeUntilExpiry = expiryDate.getTime() - now.getTime();
+      return timeUntilExpiry > 0 && timeUntilExpiry <= leadTime && !doc.alertSent;
+    });
   });
 }
 
 /**
- * Calculate string similarity (0-1) using Levenshtein distance.
+ * Mark document alert as sent
  */
-function calculateStringSimilarity(s1: string, s2: string): number {
-  if (s1 === s2) return 1;
+export async function markDocumentAlertSent(assetId: string, documentId: string): Promise<void> {
+  const asset = await assetsStore.findById(assetId);
+  if (!asset) return;
 
-  const len1 = s1.length;
-  const len2 = s2.length;
-  const maxLen = Math.max(len1, len2);
-
-  if (maxLen === 0) return 1;
-
-  // Simple similarity: 1 - (edit distance / max length)
-  const distance = levenshteinDistance(s1, s2);
-  return 1 - distance / maxLen;
-}
-
-/**
- * Levenshtein distance between two strings.
- */
-function levenshteinDistance(s1: string, s2: string): number {
-  const matrix: number[][] = [];
-
-  for (let i = 0; i <= s2.length; i++) {
-    matrix[i] = [i];
-  }
-  for (let j = 0; j <= s1.length; j++) {
-    matrix[0][j] = j;
-  }
-
-  for (let i = 1; i <= s2.length; i++) {
-    for (let j = 1; j <= s1.length; j++) {
-      if (s2.charAt(i - 1) === s1.charAt(j - 1)) {
-        matrix[i][j] = matrix[i - 1][j - 1];
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
-      }
+  const updatedDocs = asset.documents.map(doc => {
+    if (doc.id === documentId) {
+      return { ...doc, alertSent: true, alertSentAt: new Date().toISOString() };
     }
-  }
+    return doc;
+  });
 
-  return matrix[s2.length][s1.length];
-}
-
-/**
- * Validate status change.
- */
-async function validateStatusChange(
-  asset: Asset,
-  newStatus: AssetStatus
-): Promise<void> {
-  // Define valid transitions
-  const validTransitions: Record<AssetStatus, AssetStatus[]> = {
-    available: ['deployed', 'idle', 'standby', 'under_maintenance', 'breakdown', 'out_of_service', 'disposed'],
-    deployed: ['available', 'idle', 'standby', 'under_maintenance', 'breakdown', 'out_of_service', 'in_transit', 'disposed'],
-    idle: ['available', 'deployed', 'standby', 'under_maintenance', 'breakdown', 'out_of_service', 'disposed'],
-    standby: ['available', 'deployed', 'idle', 'under_maintenance', 'breakdown', 'out_of_service', 'disposed'],
-    under_maintenance: ['available', 'deployed', 'idle', 'standby', 'breakdown', 'out_of_service', 'disposed'],
-    breakdown: ['under_maintenance', 'out_of_service', 'disposed'],
-    out_of_service: ['available', 'under_maintenance', 'disposed'],
-    in_transit: ['deployed', 'available', 'idle'],
-    disposed: [],
-  };
-
-  const allowed = validTransitions[asset.status];
-  if (!allowed.includes(newStatus)) {
-    throw new Error(
-      `Invalid status transition: cannot change from '${asset.status}' to '${newStatus}'`
-    );
-  }
-
-  // Additional validation: check for open work orders before certain transitions
-  if (newStatus === 'disposed' || newStatus === 'out_of_service') {
-    // In production, would check for open work orders
-    console.log(`Asset ${asset.assetCode} transitioning to ${newStatus} — checking for open work orders`);
-  }
-}
-
-// ============================================================================
-// Query Helpers
-// ============================================================================
-
-/**
- * Get assets by category code.
- */
-export async function getAssetsByCategory(categoryCode: string): Promise<Asset[]> {
-  const category = await getAssetCategoryByCode(categoryCode as any);
-  if (!category) {
-    throw new Error(`Category ${categoryCode} not found`);
-  }
-
-  const allAssets = await assetsStore.findAll();
-  return allAssets.filter(a => a.categoryId === category.id);
-}
-
-/**
- * Get assets expiring documents within N days.
- */
-export async function getAssetsWithExpiringDocuments(
-  companyId: string,
-  daysThreshold: number
-): Promise<Asset[]> {
-  // In production, would join with asset_documents table
-  // For now, return all assets (document expiry check is in assetDocuments service)
-  return listAssets({ companyId });
-}
-
-/**
- * Get asset statistics.
- */
-export async function getAssetStatistics(companyId: string): Promise<{
-  total: number;
-  byStatus: Record<AssetStatus, number>;
-  byOwnership: Record<AssetOwnership, number>;
-}> {
-  const assets = await listAssets({ companyId });
-
-  const byStatus: Record<string, number> = {};
-  const byOwnership: Record<string, number> = {};
-
-  for (const asset of assets) {
-    byStatus[asset.status] = (byStatus[asset.status] || 0) + 1;
-    byOwnership[asset.ownership] = (byOwnership[asset.ownership] || 0) + 1;
-  }
-
-  return {
-    total: assets.length,
-    byStatus: byStatus as Record<AssetStatus, number>,
-    byOwnership: byOwnership as Record<AssetOwnership, number>,
-  };
+  await assetsStore.update(assetId, { documents: updatedDocs });
 }

@@ -7,6 +7,7 @@ import {
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/assets', label: 'Asset Master', icon: Truck },
   { path: '/fleet', label: 'Fleet & Equipment', icon: Truck },
   { path: '/fuel', label: 'Fuel Management', icon: Fuel },
   { path: '/rmc', label: 'RMC Operations', icon: Factory },

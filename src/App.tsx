@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import AssetList from './pages/AssetList';
+import AssetProfile from './pages/AssetProfile';
 import FleetManagement from './pages/FleetManagement';
 import FuelManagement from './pages/FuelManagement';
 import RMCOperations from './pages/RMCOperations';
@@ -15,6 +17,8 @@ export default function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/assets" element={<AssetList />} />
+          <Route path="/assets/:id" element={<AssetProfile />} />
           <Route path="/fleet" element={<FleetManagement />} />
           <Route path="/fuel" element={<FuelManagement />} />
           <Route path="/rmc" element={<RMCOperations />} />

@@ -6,6 +6,13 @@
  */
 
 // ============================================================================
+// Common Types
+// ============================================================================
+
+export type Status = 'draft' | 'submitted' | 'pending_approval' | 'approved' | 'rejected' | 'returned' | 'posted' | 'reversed';
+export type DataSource = 'manual' | 'imported' | 'integrated_live' | 'integrated_delayed' | 'system_calculated';
+
+// ============================================================================
 // 2.1 Organizational Hierarchy & Shared Masters
 // ============================================================================
 

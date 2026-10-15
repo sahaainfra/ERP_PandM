@@ -162,3 +162,35 @@
 - **Rationale**: Single source of truth, no duplicate logic. Workflow engine already enforces submitter ≠ approver.
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-026: Single Asset Register *(Added Part 04)*
+- **Decision**: One authoritative register for all assets, linked to fixed-asset records
+- **Rationale**: Prevents duplication, ensures consistency between operations and finance
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-027: Configurable Categories *(Added Part 04)*
+- **Decision**: Asset categories stored in database, not hard-coded
+- **Rationale**: Allows companies to add custom categories without code changes
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-028: Meter Replacement as Controlled Event *(Added Part 04)*
+- **Decision**: Meter replacement requires approval, never appears as negative usage
+- **Rationale**: Prevents fraud, maintains accurate usage history
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-029: Compliance Document Expiry Alerts *(Added Part 04)*
+- **Decision**: Configurable lead times (30/15/7 days) for document expiry alerts
+- **Rationale**: Ensures timely renewal, prevents legal/operational issues
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-030: Bulk Import with Validation *(Added Part 04)*
+- **Decision**: Bulk import validates all rows first, no partial commits on error
+- **Rationale**: Prevents data corruption, allows dry-run testing
+- **Date**: 2026-01-28
+- **Status**: Active

@@ -1,201 +1,213 @@
 /**
  * Part 04 — Asset Categories Service
- *
- * Configurable category tree for assets. Each category defines:
- * - Usage meter type (hour_meter, odometer, both, none)
- * - Fuel type and consumption unit
- * - Required documents
- * - Required evidence photo categories
- * - Whether operator licence validation applies
  */
 
 import { storage } from './storage';
-import { AssetCategory, AssetCategoryCode } from '../types';
+import { AssetCategoryDefinition, AssetCategory, AssetSubCategory, MeterType, FuelType, FuelConsumptionUnit } from './assetTypes';
 import { generateId } from './utils';
-import { recordAudit } from './audit';
 
-const assetCategoriesStore = storage.getAdapter<AssetCategory>('asset_categories');
-
-// ============================================================================
-// Category Management
-// ============================================================================
+const categoriesStore = storage.getAdapter<AssetCategoryDefinition>('asset_categories');
 
 /**
- * Create an asset category.
+ * Seed default asset categories
  */
-export async function createAssetCategory(
-  data: Omit<AssetCategory, 'id' | 'createdAt'>,
-  userId: string
-): Promise<AssetCategory> {
-  // Check for duplicate code
-  const existing = await assetCategoriesStore.findOne({ code: data.code } as Partial<AssetCategory>);
-  if (existing) {
-    throw new Error(`Asset category with code '${data.code}' already exists`);
-  }
-
-  const category: AssetCategory = {
-    ...data,
-    id: generateId(),
-    createdAt: new Date().toISOString(),
-  };
-
-  await assetCategoriesStore.create(category);
-
-  // Audit
-  await recordAudit({
-    entityType: 'AssetCategory',
-    entityId: category.id,
-    action: 'create',
-    before: null,
-    after: category as any,
-    actorId: userId,
-    actorRole: 'super_admin',
-    requestId: generateId(),
-  });
-
-  return category;
-}
-
-/**
- * Get asset category by ID.
- */
-export async function getAssetCategory(id: string): Promise<AssetCategory | null> {
-  return assetCategoriesStore.findById(id);
-}
-
-/**
- * Get asset category by code.
- */
-export async function getAssetCategoryByCode(code: AssetCategoryCode): Promise<AssetCategory | null> {
-  return assetCategoriesStore.findOne({ code } as Partial<AssetCategory>);
-}
-
-/**
- * List all asset categories.
- */
-export async function listAssetCategories(): Promise<AssetCategory[]> {
-  return assetCategoriesStore.findAll();
-}
-
-/**
- * Update asset category.
- */
-export async function updateAssetCategory(
-  id: string,
-  updates: Partial<AssetCategory>,
-  userId: string
-): Promise<AssetCategory> {
-  const existing = await assetCategoriesStore.findById(id);
-  if (!existing) {
-    throw new Error(`Asset category ${id} not found`);
-  }
-
-  const updated = await assetCategoriesStore.update(id, updates);
-
-  // Audit
-  await recordAudit({
-    entityType: 'AssetCategory',
-    entityId: id,
-    action: 'update',
-    before: existing as any,
-    after: updated as any,
-    actorId: userId,
-    actorRole: 'super_admin',
-    requestId: generateId(),
-  });
-
-  return updated;
-}
-
-// ============================================================================
-// Seed Default Categories
-// ============================================================================
-
-export async function seedDefaultAssetCategories(): Promise<void> {
-  const existing = await assetCategoriesStore.findAll();
+export async function seedAssetCategories(): Promise<void> {
+  const existing = await categoriesStore.findAll();
   if (existing.length > 0) return;
 
-  const categories: Omit<AssetCategory, 'id' | 'createdAt'>[] = [
+  const categories: Omit<AssetCategoryDefinition, 'id' | 'createdAt'>[] = [
     {
       code: 'earthmoving',
       name: 'Earthmoving',
-      description: 'Excavators, JCBs, backhoe loaders, wheel loaders, bulldozers, motor graders',
-      usageMeterType: 'hour_meter',
+      description: 'Excavators, loaders, bulldozers, graders',
+      meterType: 'hour_meter',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'L/hr',
-      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'permit'],
-      requiredEvidencePhotos: ['hour_meter', 'registration_plate'],
+      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'pollution_certificate'],
+      requiredEvidenceCategories: ['hour_meter', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'excavator', name: 'Excavator' },
+        { code: 'jcb', name: 'JCB' },
+        { code: 'backhoe_loader', name: 'Backhoe Loader' },
+        { code: 'wheel_loader', name: 'Wheel Loader' },
+        { code: 'bulldozer', name: 'Bulldozer' },
+        { code: 'motor_grader', name: 'Motor Grader' },
+      ],
     },
     {
       code: 'compaction',
       name: 'Compaction',
-      description: 'Vibratory rollers, tandem rollers, plate compactors',
-      usageMeterType: 'hour_meter',
+      description: 'Rollers, compactors',
+      meterType: 'hour_meter',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'L/hr',
       requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance'],
-      requiredEvidencePhotos: ['hour_meter', 'registration_plate'],
+      requiredEvidenceCategories: ['hour_meter', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'vibratory_roller', name: 'Vibratory Roller' },
+        { code: 'tandem_roller', name: 'Tandem Roller' },
+        { code: 'plate_compactor', name: 'Plate Compactor' },
+      ],
     },
     {
-      code: 'lifting',
-      name: 'Lifting and Handling',
-      description: 'Mobile and tower cranes, forklifts',
-      usageMeterType: 'hour_meter',
+      code: 'lifting_handling',
+      name: 'Lifting & Handling',
+      description: 'Cranes, forklifts',
+      meterType: 'hour_meter',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'L/hr',
       requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'load_test_certificate'],
-      requiredEvidencePhotos: ['hour_meter', 'registration_plate', 'load_test_certificate'],
+      requiredEvidenceCategories: ['hour_meter', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'mobile_crane', name: 'Mobile Crane' },
+        { code: 'tower_crane', name: 'Tower Crane' },
+        { code: 'forklift', name: 'Forklift' },
+      ],
     },
     {
       code: 'concrete',
       name: 'Concrete',
-      description: 'Concrete pumps, transit mixers, RMC batching plants, silos, aggregate bins, weigh hoppers, conveyors, admixture dosing systems, weighbridges',
-      usageMeterType: 'hour_meter',
+      description: 'Pumps, mixers, batching plants',
+      meterType: 'hour_meter',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'L/hr',
       requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance'],
-      requiredEvidencePhotos: ['hour_meter', 'registration_plate'],
+      requiredEvidenceCategories: ['hour_meter', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'boom_pump', name: 'Boom Pump' },
+        { code: 'line_pump', name: 'Line Pump' },
+        { code: 'transit_mixer', name: 'Transit Mixer' },
+        { code: 'batching_plant', name: 'Batching Plant' },
+        { code: 'silo', name: 'Silo' },
+        { code: 'aggregate_bin', name: 'Aggregate Bin' },
+        { code: 'weigh_hopper', name: 'Weigh Hopper' },
+        { code: 'conveyor', name: 'Conveyor' },
+        { code: 'admixture_dosing', name: 'Admixture Dosing System' },
+        { code: 'weighbridge', name: 'Weighbridge' },
+      ],
     },
     {
       code: 'transport',
       name: 'Transport',
-      description: 'Dumpers, tippers, trucks, water tankers, diesel bowsers/tankers',
-      usageMeterType: 'both',
+      description: 'Trucks, tankers, dumpers',
+      meterType: 'both',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'both',
-      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'permit', 'puc'],
-      requiredEvidencePhotos: ['hour_meter', 'odometer', 'registration_plate'],
+      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'pollution_certificate', 'permit'],
+      requiredEvidenceCategories: ['odometer', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'dumper', name: 'Dumper' },
+        { code: 'tipper', name: 'Tipper' },
+        { code: 'truck', name: 'Truck' },
+        { code: 'water_tanker', name: 'Water Tanker' },
+        { code: 'diesel_bowser', name: 'Diesel Bowser/Tanker' },
+      ],
     },
     {
       code: 'power_air',
-      name: 'Power and Air',
-      description: 'Generators (DG sets), compressors',
-      usageMeterType: 'hour_meter',
+      name: 'Power & Air',
+      description: 'Generators, compressors',
+      meterType: 'hour_meter',
       fuelType: 'diesel',
       fuelConsumptionUnit: 'L/hr',
       requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance'],
-      requiredEvidencePhotos: ['hour_meter'],
+      requiredEvidenceCategories: ['hour_meter', 'registration_plate'],
       operatorLicenceRequired: false,
+      subCategories: [
+        { code: 'generator', name: 'Generator (DG Set)' },
+        { code: 'compressor', name: 'Compressor' },
+      ],
     },
     {
       code: 'light_support',
-      name: 'Light and Support',
-      description: 'Staff vehicles, maintenance vans, miscellaneous machinery',
-      usageMeterType: 'odometer',
-      fuelType: 'petrol',
-      fuelConsumptionUnit: 'L/km',
-      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'puc'],
-      requiredEvidencePhotos: ['odometer', 'registration_plate'],
+      name: 'Light & Support',
+      description: 'Staff vehicles, maintenance vans',
+      meterType: 'both',
+      fuelType: 'diesel',
+      fuelConsumptionUnit: 'both',
+      requiredDocuments: ['registration_certificate', 'fitness_certificate', 'insurance', 'pollution_certificate'],
+      requiredEvidenceCategories: ['odometer', 'registration_plate'],
       operatorLicenceRequired: true,
+      subCategories: [
+        { code: 'staff_vehicle', name: 'Staff Vehicle' },
+        { code: 'maintenance_van', name: 'Maintenance Van' },
+        { code: 'miscellaneous', name: 'Miscellaneous Machinery' },
+      ],
     },
   ];
 
   for (const category of categories) {
-    await createAssetCategory(category, 'system');
+    await categoriesStore.create({
+      ...category,
+      id: generateId(),
+      createdAt: new Date().toISOString(),
+    });
   }
+}
+
+/**
+ * Get all asset categories
+ */
+export async function getAllCategories(): Promise<AssetCategoryDefinition[]> {
+  return categoriesStore.findAll();
+}
+
+/**
+ * Get category by code
+ */
+export async function getCategory(code: AssetCategory): Promise<AssetCategoryDefinition | null> {
+  return categoriesStore.findOne({ code } as Partial<AssetCategoryDefinition>);
+}
+
+/**
+ * Get category definition with subcategories
+ */
+export async function getCategoryWithSubCategories(code: AssetCategory): Promise<AssetCategoryDefinition | null> {
+  return categoriesStore.findOne({ code } as Partial<AssetCategoryDefinition>);
+}
+
+/**
+ * Validate subcategory belongs to category
+ */
+export async function validateSubCategory(category: AssetCategory, subCategory: AssetSubCategory): Promise<boolean> {
+  const categoryDef = await getCategory(category);
+  if (!categoryDef) return false;
+  return categoryDef.subCategories.some(sc => sc.code === subCategory);
+}
+
+/**
+ * Get meter type for category
+ */
+export async function getMeterTypeForCategory(category: AssetCategory): Promise<MeterType> {
+  const categoryDef = await getCategory(category);
+  return categoryDef?.meterType || 'none';
+}
+
+/**
+ * Get fuel type for category
+ */
+export async function getFuelTypeForCategory(category: AssetCategory): Promise<FuelType> {
+  const categoryDef = await getCategory(category);
+  return categoryDef?.fuelType || 'diesel';
+}
+
+/**
+ * Get required documents for category
+ */
+export async function getRequiredDocuments(category: AssetCategory): Promise<string[]> {
+  const categoryDef = await getCategory(category);
+  return categoryDef?.requiredDocuments || [];
+}
+
+/**
+ * Check if operator licence is required
+ */
+export async function isOperatorLicenceRequired(category: AssetCategory): Promise<boolean> {
+  const categoryDef = await getCategory(category);
+  return categoryDef?.operatorLicenceRequired || false;
 }
