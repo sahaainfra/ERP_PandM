@@ -13,6 +13,9 @@ import TeamChat from './pages/TeamChat';
 import Finance from './pages/Finance';
 import Alerts from './pages/Alerts';
 import AdminPermissions from './pages/AdminPermissions';
+import LogbookEntry from './pages/LogbookEntry';
+import SupervisorDailySheet from './pages/SupervisorDailySheet';
+import AssetLogbookHistory from './pages/AssetLogbookHistory';
 
 export default function App() {
   return (
@@ -32,6 +35,10 @@ export default function App() {
           <Route path="/finance" element={<Finance />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/admin/permissions" element={<AdminPermissions />} />
+          <Route path="/logbooks/new" element={<LogbookEntry />} />
+          <Route path="/logbooks/:id" element={<LogbookEntry />} />
+          <Route path="/logbooks/supervisor" element={<SupervisorDailySheet />} />
+          <Route path="/logbooks/asset/:id" element={<AssetLogbookHistory />} />
         </Routes>
       </Layout>
     </BrowserRouter>
