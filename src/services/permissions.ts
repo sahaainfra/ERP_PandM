@@ -38,6 +38,14 @@ export type PermissionResource =
   | 'fuel_verification'
   | 'maintenance_order'
   | 'calibration_record'
+  // Asset Lifecycle (Part 05)
+  | 'asset_allocation'
+  | 'asset_transfer'
+  | 'asset_mobilization'
+  | 'rental_agreement'
+  | 'hire_out_agreement'
+  | 'daily_deployment'
+  | 'operator'
   // RMC
   | 'rmc_plant'
   | 'batch_ticket'

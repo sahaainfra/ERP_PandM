@@ -194,3 +194,35 @@
 - **Rationale**: Prevents data corruption, allows dry-run testing
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-031: Single Allocation Source of Truth *(Added Part 05)*
+- **Decision**: Allocation history is the single source for utilization metrics
+- **Rationale**: Prevents manual data entry errors, ensures consistency
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-032: Transfer with Receipt Confirmation *(Added Part 05)*
+- **Decision**: Transfers require receipt confirmation with meter readings and condition check
+- **Rationale**: Ensures asset condition is tracked at both ends of transfer
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-033: Operator Assignment Validation *(Added Part 05)*
+- **Decision**: Comprehensive validation before operator assignment
+- **Rationale**: Legal compliance, safety, competency assurance
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-034: Override with Audit *(Added Part 05)*
+- **Decision**: Validation overrides require reason and approver, fully audited
+- **Rationale**: Flexibility with accountability
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-035: Document Expiry Alerts *(Added Part 05)*
+- **Decision**: Configurable lead times for document expiry alerts
+- **Rationale**: Proactive compliance management
+- **Date**: 2026-01-28
+- **Status**: Active

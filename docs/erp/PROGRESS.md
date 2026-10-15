@@ -9,7 +9,7 @@
 | 02 | Shared Platform Foundation | 2 | ✅ Complete | 2026-01-28 | [part-02-report.md](parts/part-02-report.md) |
 | 03 | Roles, Permissions & Approval Hierarchy | 2 | ✅ Complete | 2026-01-28 | [part-03-report.md](parts/part-03-report.md) |
 | 04 | Asset Master Register | 2 | ✅ Complete | 2026-01-28 | [part-04-report.md](parts/part-04-report.md) |
-| 05 | Fuel Management: Issue, Verification, Variance | 2 | 🔲 Not started | — | — |
+| 05 | Asset Lifecycle, Allocation, Operators & Drivers | 2 | ✅ Complete | 2026-01-28 | [part-05-report.md](parts/part-05-report.md) |
 | 06 | Maintenance & Workshop: Work Orders, Spares | 2 | 🔲 Not started | — | — |
 | 07 | RMC Mix Designs: Proportions, Trials, Approval | 3 | 🔲 Not started | — | — |
 | 08 | RMC Orders & Batch Production | 3 | 🔲 Not started | — | — |

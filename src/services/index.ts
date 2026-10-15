@@ -41,6 +41,8 @@ import * as delegationService from './delegation';
 import * as approvalMatrixService from './approvalMatrix';
 import * as assetCategoriesService from './assetCategories';
 import * as assetsService from './assets';
+import * as assetAllocationService from './assetAllocation';
+import * as operatorManagementService from './operatorManagement';
 
 export {
   mastersService as masters,
@@ -57,6 +59,8 @@ export {
   approvalMatrixService as approvalMatrix,
   assetCategoriesService as assetCategories,
   assetsService as assets,
+  assetAllocationService as assetAllocation,
+  operatorManagementService as operatorManagement,
 };
 
 // ============================================================================

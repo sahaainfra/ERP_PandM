@@ -3,6 +3,9 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import AssetList from './pages/AssetList';
 import AssetProfile from './pages/AssetProfile';
+import AllocationCalendar from './pages/AllocationCalendar';
+import OperatorList from './pages/OperatorList';
+import OperatorProfile from './pages/OperatorProfile';
 import FleetManagement from './pages/FleetManagement';
 import FuelManagement from './pages/FuelManagement';
 import RMCOperations from './pages/RMCOperations';
@@ -19,6 +22,9 @@ export default function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/assets" element={<AssetList />} />
           <Route path="/assets/:id" element={<AssetProfile />} />
+          <Route path="/allocations" element={<AllocationCalendar />} />
+          <Route path="/operators" element={<OperatorList />} />
+          <Route path="/operators/:id" element={<OperatorProfile />} />
           <Route path="/fleet" element={<FleetManagement />} />
           <Route path="/fuel" element={<FuelManagement />} />
           <Route path="/rmc" element={<RMCOperations />} />
