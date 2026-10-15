@@ -1,5 +1,5 @@
 /**
- * Part 02 — Shared Platform Foundation
+ * Part 02 & 03 — Shared Platform Foundation + Roles & Permissions
  *
  * Main entry point that exports all services and provides initialization.
  */
@@ -35,6 +35,10 @@ import * as workflowService from './workflow';
 import * as alertsService from './alerts';
 import * as idempotencyService from './idempotency';
 import * as apiService from './api';
+import * as rolesService from './roles';
+import * as permissionsService from './permissions';
+import * as delegationService from './delegation';
+import * as approvalMatrixService from './approvalMatrix';
 
 export {
   mastersService as masters,
@@ -45,6 +49,10 @@ export {
   alertsService as alerts,
   idempotencyService as idempotency,
   apiService as api,
+  rolesService as roles,
+  permissionsService as permissions,
+  delegationService as delegation,
+  approvalMatrixService as approvalMatrix,
 };
 
 // ============================================================================
@@ -54,6 +62,9 @@ export {
 import * as workflow from './workflow';
 import * as alerts from './alerts';
 import * as masters from './masters';
+import * as roles from './roles';
+import * as permissions from './permissions';
+import * as approvalMatrix from './approvalMatrix';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -75,6 +86,18 @@ export async function initializePlatform(): Promise<void> {
   // Seed default UoMs
   await seedDefaultUoMs();
   logger.info('Default UoMs seeded');
+
+  // Seed default roles (Part 03)
+  await roles.seedDefaultRoles();
+  logger.info('Default roles seeded');
+
+  // Seed default permissions (Part 03)
+  await permissions.seedDefaultPermissions();
+  logger.info('Default permissions seeded');
+
+  // Seed default approval rules (Part 03)
+  await approvalMatrix.seedDefaultApprovalRules();
+  logger.info('Default approval rules seeded');
 
   logger.info('Platform initialization complete');
 }

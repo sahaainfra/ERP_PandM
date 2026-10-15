@@ -112,19 +112,35 @@ export interface User {
 }
 
 export type UserRole =
+  // Executive
   | 'super_admin'
   | 'company_admin'
+  // Management
   | 'project_manager'
   | 'site_manager'
+  | 'fleet_manager'
   | 'plant_manager'
+  | 'maintenance_manager'
+  | 'qc_manager'
+  | 'accounts_manager'
+  | 'dispatch_manager'
+  // Operational
   | 'site_engineer'
-  | 'operator'
+  | 'fleet_supervisor'
   | 'fuel_officer'
   | 'store_keeper'
-  | 'accounts_manager'
+  // Technical
+  | 'operator'
+  | 'technician'
+  | 'lab_staff'
+  | 'calibration_officer'
+  // Support
+  | 'procurement_officer'
   | 'accounts_executive'
-  | 'qa_engineer'
-  | 'maintenance_manager'
+  | 'logistics_staff'
+  | 'general_staff'
+  // Read-only
+  | 'auditor'
   | 'viewer';
 
 export interface UserScope {

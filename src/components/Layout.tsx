@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Truck, Fuel, Factory, MessageSquare,
-  DollarSign, Bell, Menu, X, ChevronDown, User, Settings, LogOut
+  DollarSign, Bell, Shield, Menu, X, ChevronDown, User, Settings, LogOut
 } from 'lucide-react';
 
 const navItems = [
@@ -13,6 +13,7 @@ const navItems = [
   { path: '/chat', label: 'Team Chat', icon: MessageSquare },
   { path: '/finance', label: 'Finance & Costing', icon: DollarSign },
   { path: '/alerts', label: 'Alerts', icon: Bell },
+  { path: '/admin/permissions', label: 'Permissions Admin', icon: Shield },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {

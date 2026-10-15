@@ -7,6 +7,7 @@ import RMCOperations from './pages/RMCOperations';
 import TeamChat from './pages/TeamChat';
 import Finance from './pages/Finance';
 import Alerts from './pages/Alerts';
+import AdminPermissions from './pages/AdminPermissions';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/chat" element={<TeamChat />} />
           <Route path="/finance" element={<Finance />} />
           <Route path="/alerts" element={<Alerts />} />
+          <Route path="/admin/permissions" element={<AdminPermissions />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -130,3 +130,35 @@
 - **Rationale**: Prevents alert fatigue from repeated threshold breaches. Users get one alert per entity per hour.
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-021: Configurable Roles (Not Hard-Coded) *(Added Part 03)*
+- **Decision**: Roles are stored in database, not hard-coded in application code
+- **Rationale**: Allows companies to customize roles without code changes. Supports multi-tenant deployments with different role structures.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-022: Permission Enforcement at API Level *(Added Part 03)*
+- **Decision**: UI hides unauthorized actions, but API is the control
+- **Rationale**: Security cannot rely on client-side checks alone. API-level enforcement prevents unauthorized access even if UI is bypassed.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-023: Query-Level Scoping *(Added Part 03)*
+- **Decision**: List endpoints filter results based on user scope
+- **Rationale**: Prevents data leakage through aggregate queries. Users only see records within their organizational boundary.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-024: Delegation with Date Bounds *(Added Part 03)*
+- **Decision**: Delegations have start/end dates, automatically expire
+- **Rationale**: Prevents indefinite delegation, reduces security risk. Ensures temporary authority doesn't become permanent.
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-025: Maker-Checker via Workflow Engine *(Added Part 03)*
+- **Decision**: Reuse Part 02 workflow engine for maker-checker enforcement
+- **Rationale**: Single source of truth, no duplicate logic. Workflow engine already enforces submitter ≠ approver.
+- **Date**: 2026-01-28
+- **Status**: Active
