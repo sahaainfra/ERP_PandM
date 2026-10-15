@@ -16,6 +16,8 @@ import AdminPermissions from './pages/AdminPermissions';
 import LogbookEntry from './pages/LogbookEntry';
 import SupervisorDailySheet from './pages/SupervisorDailySheet';
 import AssetLogbookHistory from './pages/AssetLogbookHistory';
+import MobileSubmission from './pages/MobileSubmission';
+import OfflineQueueManagement from './pages/OfflineQueueManagement';
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
           <Route path="/logbooks/:id" element={<LogbookEntry />} />
           <Route path="/logbooks/supervisor" element={<SupervisorDailySheet />} />
           <Route path="/logbooks/asset/:id" element={<AssetLogbookHistory />} />
+          <Route path="/submissions/new" element={<MobileSubmission />} />
+          <Route path="/submissions/offline" element={<OfflineQueueManagement />} />
         </Routes>
       </Layout>
     </BrowserRouter>

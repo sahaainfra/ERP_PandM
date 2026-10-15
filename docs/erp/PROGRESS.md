@@ -10,8 +10,8 @@
 | 03 | Roles, Permissions & Approval Hierarchy | 2 | ✅ Complete | 2026-01-28 | [part-03-report.md](parts/part-03-report.md) |
 | 04 | Asset Master Register | 2 | ✅ Complete | 2026-01-28 | [part-04-report.md](parts/part-04-report.md) |
 | 05 | Asset Lifecycle, Allocation, Operators & Drivers | 2 | ✅ Complete | 2026-01-28 | [part-05-report.md](parts/part-05-report.md) |
-| 06 | Maintenance & Workshop: Work Orders, Spares | 2 | 🔲 Not started | — | — |
-| 07 | RMC Mix Designs: Proportions, Trials, Approval | 3 | 🔲 Not started | — | — |
+| 06 | Daily Equipment Logbook | 2 | ✅ Complete | 2026-01-28 | [part-06-report.md](parts/part-06-report.md) |
+| 07 | Mandatory Operator Readings & Photo Evidence | 2 | ✅ Complete | 2026-01-28 | [part-07-report.md](parts/part-07-report.md) |
 | 08 | RMC Orders & Batch Production | 3 | 🔲 Not started | — | — |
 | 09 | RMC Quality: Slump, Cubes, NDT | 3 | 🔲 Not started | — | — |
 | 10 | RMC Dispatch & Transit Mixer Tracking | 3 | 🔲 Not started | — | — |

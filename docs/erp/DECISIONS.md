@@ -226,3 +226,35 @@
 - **Rationale**: Proactive compliance management
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-036: Evidence Rules as Configuration *(Added Part 07)*
+- **Decision**: Evidence rules stored in database, not hard-coded
+- **Rationale**: Allows customization per asset category without code changes
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-037: Submission-Logbook Linkage *(Added Part 07)*
+- **Decision**: Approved submissions create/update logbook records
+- **Rationale**: Single source of truth, no parallel records
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-038: Offline-First Architecture *(Added Part 07)*
+- **Decision**: Queue submissions locally, sync when online
+- **Rationale**: Supports field operations with poor connectivity
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-039: OCR as Reviewer Aid Only *(Added Part 07)*
+- **Decision**: OCR results shown beside typed values, never auto-replace
+- **Rationale**: Operator input is authoritative, OCR is supplementary
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-040: Photo Metadata as Evidence, Not Proof *(Added Part 07)*
+- **Decision**: GPS/EXIF metadata stored but labeled as supporting evidence
+- **Rationale**: Metadata can be spoofed, not conclusive proof
+- **Date**: 2026-01-28
+- **Status**: Active

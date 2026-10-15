@@ -35,6 +35,7 @@ export type PermissionResource =
   | 'equipment'
   | 'operator_log'
   | 'equipment_logbook'
+  | 'operator_submission'
   | 'fuel_issue'
   | 'fuel_verification'
   | 'maintenance_order'
