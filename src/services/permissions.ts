@@ -69,7 +69,12 @@ export type PermissionResource =
   | 'audit_log'
   | 'report'
   | 'dashboard'
-  | 'attachment';
+  | 'attachment'
+  // Assets (Part 04)
+  | 'asset'
+  | 'asset_category'
+  | 'asset_document'
+  | 'asset_meter';
 
 export type PermissionScope =
   | 'company'

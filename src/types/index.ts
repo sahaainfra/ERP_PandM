@@ -149,3 +149,203 @@ export interface DashboardKPI {
   icon: string;
   color: string;
 }
+
+// ============================================================================
+// Part 04 — Asset Master Types
+// ============================================================================
+
+export type AssetCategoryCode =
+  | 'earthmoving'
+  | 'compaction'
+  | 'lifting'
+  | 'concrete'
+  | 'transport'
+  | 'power_air'
+  | 'light_support';
+
+export type UsageMeterType = 'hour_meter' | 'odometer' | 'both' | 'none';
+export type FuelType = 'diesel' | 'petrol' | 'electric' | 'cng' | 'hybrid' | 'none';
+export type FuelConsumptionUnit = 'L/hr' | 'L/km' | 'both';
+export type AssetOwnership = 'owned' | 'leased' | 'rented' | 'subcontractor' | 'hired';
+export type AssetStatus =
+  | 'available'
+  | 'deployed'
+  | 'idle'
+  | 'standby'
+  | 'under_maintenance'
+  | 'breakdown'
+  | 'out_of_service'
+  | 'in_transit'
+  | 'disposed';
+
+export interface AssetCategory {
+  id: string;
+  code: AssetCategoryCode;
+  name: string;
+  description: string;
+  parentId?: string;
+  usageMeterType: UsageMeterType;
+  fuelType: FuelType;
+  fuelConsumptionUnit: FuelConsumptionUnit;
+  requiredDocuments: string[]; // e.g., ['registration_certificate', 'fitness_certificate', 'insurance']
+  requiredEvidencePhotos: string[]; // e.g., ['hour_meter', 'odometer', 'registration_plate']
+  operatorLicenceRequired: boolean;
+  createdAt: string;
+}
+
+export interface Asset {
+  id: string;
+  companyId: string;
+  categoryId: string;
+  
+  // Identity
+  assetCode: string;
+  registrationNumber: string;
+  country: string;
+  make: string;
+  model: string;
+  variant?: string;
+  year: number;
+  serialNumber?: string;
+  chassisNumber?: string;
+  engineNumber?: string;
+  capacity?: number;
+  capacityUnit?: string;
+  color?: string;
+  photographs: string[]; // Attachment IDs
+  
+  // Ownership
+  ownership: AssetOwnership;
+  ownerVendorId?: string;
+  contractReference?: string;
+  rateBasis?: string;
+  rate?: number;
+  rateCurrency?: string;
+  
+  // Finance link
+  purchaseDate?: string;
+  purchaseCost?: number;
+  fixedAssetId?: string; // Link to accounting fixed-asset record
+  depreciationMethod?: string;
+  bookValue?: number; // Read from accounting, never recalculated
+  
+  // Assignment
+  currentProjectId?: string;
+  currentSiteId?: string;
+  currentPlantId?: string;
+  departmentId?: string;
+  supervisorId?: string;
+  defaultOperatorId?: string;
+  location?: string;
+  
+  // Status
+  status: AssetStatus;
+  
+  // Meters
+  currentHourMeter?: number;
+  currentOdometer?: number;
+  
+  // Fuel
+  tankCapacity?: number; // litres
+  fuelType?: FuelType;
+  fuelBenchmarkId?: string; // Link to benchmark (Part 10)
+  
+  // Telematics
+  telematicsDeviceId?: string;
+  telematicsProvider?: string;
+  telematicsSim?: string;
+  hasFuelSensor?: boolean;
+  
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+export interface AssetDocument {
+  id: string;
+  assetId: string;
+  documentType: string; // e.g., 'registration_certificate', 'fitness_certificate', 'insurance'
+  documentNumber: string;
+  issueDate: string;
+  expiryDate: string;
+  attachmentId: string; // Link to uploaded file
+  issuingAuthority?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AssetMeterReading {
+  id: string;
+  assetId: string;
+  meterType: 'hour_meter' | 'odometer';
+  reading: number;
+  readingDate: string;
+  verifiedBy?: string;
+  attachmentId?: string; // Photo evidence
+  notes?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface AssetMeterReplacement {
+  id: string;
+  assetId: string;
+  meterType: 'hour_meter' | 'odometer';
+  oldMeterFinalReading: number;
+  newMeterStartReading: number;
+  replacementDate: string;
+  reason: string;
+  approvedBy: string;
+  approvedAt: string;
+  attachmentId?: string; // Photo evidence
+  notes?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface AssetAllocation {
+  id: string;
+  assetId: string;
+  projectId?: string;
+  siteId?: string;
+  plantId?: string;
+  departmentId?: string;
+  startDate: string;
+  endDate?: string;
+  reason?: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface AssetImportRow {
+  rowNumber: number;
+  assetCode: string;
+  registrationNumber: string;
+  make: string;
+  model: string;
+  year: number;
+  categoryCode: AssetCategoryCode;
+  ownership: AssetOwnership;
+  status: AssetStatus;
+  [key: string]: string | number | undefined;
+}
+
+export interface AssetImportResult {
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  errors: Array<{
+    rowNumber: number;
+    field: string;
+    message: string;
+  }>;
+  warnings: Array<{
+    rowNumber: number;
+    field: string;
+    message: string;
+  }>;
+  dryRun: boolean;
+  importedCount: number;
+}
