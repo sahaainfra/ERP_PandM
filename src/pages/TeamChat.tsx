@@ -206,7 +206,7 @@ export default function TeamChat() {
             </button>
           </div>
           <p className="text-[10px] text-gray-400 mt-2 text-center">
-            🔒 End-to-end encrypted • Messages stored securely
+            ⚠️ Demo mode — messages are not persisted. E2E encryption will be added in Part 11.
           </p>
         </div>
       </div>
