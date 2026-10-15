@@ -18,6 +18,8 @@ import SupervisorDailySheet from './pages/SupervisorDailySheet';
 import AssetLogbookHistory from './pages/AssetLogbookHistory';
 import MobileSubmission from './pages/MobileSubmission';
 import OfflineQueueManagement from './pages/OfflineQueueManagement';
+import PendingApprovals from './pages/PendingApprovals';
+import ApproverReview from './pages/ApproverReview';
 
 export default function App() {
   return (
@@ -43,6 +45,8 @@ export default function App() {
           <Route path="/logbooks/asset/:id" element={<AssetLogbookHistory />} />
           <Route path="/submissions/new" element={<MobileSubmission />} />
           <Route path="/submissions/offline" element={<OfflineQueueManagement />} />
+          <Route path="/approvals/pending" element={<PendingApprovals />} />
+          <Route path="/approvals/:id" element={<ApproverReview />} />
         </Routes>
       </Layout>
     </BrowserRouter>

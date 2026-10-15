@@ -23,6 +23,8 @@ export type PermissionAction =
   | 'approve'
   | 'reject'
   | 'return'
+  | 'request_evidence'
+  | 'amend'
   | 'post'
   | 'reverse'
   | 'export'

@@ -43,6 +43,9 @@ import * as assetCategoriesService from './assetCategories';
 import * as assetsService from './assets';
 import * as assetAllocationService from './assetAllocation';
 import * as operatorManagementService from './operatorManagement';
+import * as workflowConfigService from './workflowConfig';
+import * as approvalReviewService from './approvalReview';
+import * as amendmentService from './amendmentService';
 
 export {
   mastersService as masters,
@@ -61,6 +64,9 @@ export {
   assetsService as assets,
   assetAllocationService as assetAllocation,
   operatorManagementService as operatorManagement,
+  workflowConfigService as workflowConfig,
+  approvalReviewService as approvalReview,
+  amendmentService as amendments,
 };
 
 // ============================================================================
@@ -74,6 +80,7 @@ import * as roles from './roles';
 import * as permissions from './permissions';
 import * as approvalMatrix from './approvalMatrix';
 import * as assetCategories from './assetCategories';
+import * as workflowConfig from './workflowConfig';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -111,6 +118,12 @@ export async function initializePlatform(): Promise<void> {
   // Seed asset categories (Part 04)
   await assetCategories.seedAssetCategories();
   logger.info('Asset categories seeded');
+
+  // Seed workflow configuration (Part 08)
+  await workflowConfig.seedDefaultRoutingRules();
+  await workflowConfig.seedDefaultValidationFlags();
+  await workflowConfig.seedDefaultSLAs();
+  logger.info('Workflow configuration seeded');
 
   logger.info('Platform initialization complete');
 }

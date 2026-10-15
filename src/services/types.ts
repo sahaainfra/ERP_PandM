@@ -9,7 +9,7 @@
 // Common Types
 // ============================================================================
 
-export type Status = 'draft' | 'submitted' | 'pending_approval' | 'approved' | 'rejected' | 'returned' | 'posted' | 'reversed';
+export type Status = 'draft' | 'submitted' | 'pending_approval' | 'pending_evidence' | 'approved' | 'rejected' | 'returned' | 'posted' | 'reversed';
 export type DataSource = 'manual' | 'imported' | 'integrated_live' | 'integrated_delayed' | 'system_calculated';
 
 // ============================================================================
@@ -317,6 +317,7 @@ export type AuditAction =
   | 'approve'
   | 'reject'
   | 'return'
+  | 'request_evidence'
   | 'post'
   | 'reverse'
   | 'amend'
