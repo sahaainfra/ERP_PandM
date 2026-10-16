@@ -24,7 +24,7 @@
 | 17 | RMC Orders and Production Scheduling | 5 | ✅ Complete | 2026-01-28 | [part-17-report.md](parts/part-17-report.md) |
 | 18 | Dispatch, Delivery, Transit Mixers and Pumps | 5 | ✅ Complete | 2026-01-28 | [part-18-report.md](parts/part-18-report.md) |
 | 19 | Document Management | 5 | 🔲 Not started | — | — |
-| 20 | Integrations: GPS, Fuel IoT, Weighbridge | 5 | 🔲 Not started | — | — |
+| 20 | ERP-Linked Conversations, Chat Notifications & Responsive Interface | 5 | ✅ Complete | 2026-01-28 | [part-20-report.md](parts/part-20-report.md) |
 | 21 | Offline/PWA & Mobile Optimization | 5 | 🔲 Not started | — | — |
 | 22 | Security Hardening & Penetration Testing | 6 | 🔲 Not started | — | — |
 | 23 | Performance Optimization & Caching | 6 | 🔲 Not started | — | — |

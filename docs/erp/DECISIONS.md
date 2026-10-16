@@ -410,3 +410,35 @@
 - **Rationale**: Enables historical analysis and comparison
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-086: Record-Linked Conversations *(Added Part 20)*
+- **Decision**: Conversations can be linked to ERP records with cached data
+- **Rationale**: Enables contextual discussions next to records
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-087: Deep Link Protocol *(Added Part 20)*
+- **Decision**: Use `erp://record-type/record-id` format for internal links
+- **Rationale**: Clear, parseable, and permission-checkable
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-088: Alert-to-Chat Integration *(Added Part 20)*
+- **Decision**: Alerts can post notifications to chat channels and DMs
+- **Rationale**: Centralizes communication and enables quick action
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-089: Actionable Messages *(Added Part 20)*
+- **Decision**: Chat messages can include action buttons that call backend APIs
+- **Rationale**: Reduces context switching and speeds up workflows
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-090: Deduplication *(Added Part 20)*
+- **Decision**: Chat notifications use deduplication keys to prevent spam
+- **Rationale**: Prevents alert fatigue from repeated notifications
+- **Date**: 2026-01-28
+- **Status**: Active

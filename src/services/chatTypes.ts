@@ -113,6 +113,7 @@ export interface MessageReaction {
 // ============================================================================
 
 export interface ChatPresence {
+  id: string;
   userId: string;
   channelId?: string;
   status: 'online' | 'offline' | 'away';
@@ -127,6 +128,7 @@ export interface ChatPresence {
 // ============================================================================
 
 export interface ChatNotificationPreferences {
+  id: string;
   userId: string;
   
   // Global settings
@@ -158,6 +160,7 @@ export interface ChannelNotificationOverride {
 // ============================================================================
 
 export interface UnreadCount {
+  id: string;
   userId: string;
   channelId: string;
   count: number;
