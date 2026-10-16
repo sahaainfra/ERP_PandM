@@ -474,3 +474,35 @@
 - **Rationale**: Compliance with Indian GST regulations
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-096: KPI Registry Pattern *(Added Part 22)*
+- **Decision**: All KPIs defined once in registry, widgets reference by ID
+- **Rationale**: Single source of truth, prevents ad-hoc queries
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-097: Pre-Aggregated Data *(Added Part 22)*
+- **Decision**: Use pre-aggregated tables with periodic refresh
+- **Rationale**: Performance at scale, consistent results
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-098: Permission-Aware Caching *(Added Part 22)*
+- **Decision**: Cache keys include user scope
+- **Rationale**: Prevents data leakage between users
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-099: Stale Data Detection *(Added Part 22)*
+- **Decision**: Flag data older than 1 hour as stale
+- **Rationale**: Ensures users know data freshness
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-100: Role-Specific Default Layouts *(Added Part 22)*
+- **Decision**: Each role has a default layout, customizable within permissions
+- **Rationale**: Relevant information for each role
+- **Date**: 2026-01-28
+- **Status**: Active

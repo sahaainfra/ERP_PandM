@@ -8,6 +8,10 @@ import {
 
 const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/dashboards/executive', label: 'Executive Dashboard', icon: LayoutDashboard },
+  { path: '/dashboards/fleet', label: 'Fleet Dashboard', icon: Truck },
+  { path: '/dashboards/operator', label: 'Operator Reporting', icon: Truck },
+  { path: '/dashboards/fuel', label: 'Fuel Verification', icon: Fuel },
   { path: '/assets', label: 'Asset Master', icon: Truck },
   { path: '/allocations', label: 'Allocations', icon: Truck },
   { path: '/operators', label: 'Operators', icon: Truck },

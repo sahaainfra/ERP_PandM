@@ -33,6 +33,10 @@ import IntegrationDashboard from './pages/IntegrationDashboard';
 import TelematicsDashboard from './pages/TelematicsDashboard';
 import PlantList from './pages/PlantList';
 import PlantControlBoard from './pages/PlantControlBoard';
+import ExecutiveDashboard from './pages/ExecutiveDashboard';
+import FleetDashboard from './pages/FleetDashboard';
+import OperatorReportingDashboard from './pages/OperatorReportingDashboard';
+import FuelVerificationDashboard from './pages/FuelVerificationDashboard';
 
 export default function App() {
   return (
@@ -73,6 +77,10 @@ export default function App() {
           <Route path="/integrations/telematics" element={<TelematicsDashboard />} />
           <Route path="/rmc/plants" element={<PlantList />} />
           <Route path="/rmc/plants/:id" element={<PlantControlBoard />} />
+          <Route path="/dashboards/executive" element={<ExecutiveDashboard />} />
+          <Route path="/dashboards/fleet" element={<FleetDashboard />} />
+          <Route path="/dashboards/operator" element={<OperatorReportingDashboard />} />
+          <Route path="/dashboards/fuel" element={<FuelVerificationDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>

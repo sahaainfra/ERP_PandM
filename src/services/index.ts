@@ -71,6 +71,9 @@ import * as plantKPIService from './plantKPIService';
 import * as mixDesignService from './mixDesignService';
 import * as postingService from './postingService';
 import * as costingService from './costingService';
+import * as kpiRegistryService from './kpiRegistry';
+import * as aggregationService from './aggregationService';
+import * as dashboardFrameworkService from './dashboardFramework';
 
 export {
   mastersService as masters,
@@ -117,6 +120,9 @@ export {
   mixDesignService as mixDesign,
   postingService as posting,
   costingService as costing,
+  kpiRegistryService as kpiRegistry,
+  aggregationService as aggregation,
+  dashboardFrameworkService as dashboardFramework,
 };
 
 // ============================================================================
@@ -138,6 +144,8 @@ import * as integrationFramework from './integrationFramework';
 import * as rmcPlant from './rmcPlantService';
 import * as batch from './batchService';
 import * as posting from './postingService';
+import * as kpiRegistry from './kpiRegistry';
+import * as dashboardFramework from './dashboardFramework';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -209,6 +217,14 @@ export async function initializePlatform(): Promise<void> {
   // Seed posting rules (Part 21)
   await posting.seedDefaultPostingRules();
   logger.info('Posting rules seeded');
+
+  // Seed KPI definitions (Part 22)
+  await kpiRegistry.seedDefaultKPIs();
+  logger.info('KPI definitions seeded');
+
+  // Seed dashboard layouts (Part 22)
+  await dashboardFramework.seedDefaultDashboardLayouts();
+  logger.info('Dashboard layouts seeded');
 
   logger.info('Platform initialization complete');
 }
