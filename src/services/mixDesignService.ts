@@ -58,8 +58,14 @@ export async function updateMixDesignConfiguration(
   const configs = await configStore.findAll();
   if (configs.length === 0) {
     const config: MixDesignConfiguration = {
-      ...updates,
       id: generateId(),
+      moistureDataMaxAgeHours: updates.moistureDataMaxAgeHours ?? 24,
+      requireCustomerApproval: updates.requireCustomerApproval ?? false,
+      requireTechnicalAuthorityApproval: updates.requireTechnicalAuthorityApproval ?? true,
+      minWaterBinderRatio: updates.minWaterBinderRatio ?? 0.35,
+      maxWaterBinderRatio: updates.maxWaterBinderRatio ?? 0.65,
+      minCementContent: updates.minCementContent ?? 250,
+      maxCementContent: updates.maxCementContent ?? 550,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -100,6 +106,7 @@ export async function createMixDesign(
 
   // Create initial revision
   await createRevision(mixDesign.id, {
+    mixDesignId: mixDesign.id,
     revisionNumber: 1,
     changeSummary: 'Initial mix design',
     changedFields: ['all'],
@@ -582,6 +589,7 @@ export async function calculateMoistureCorrection(
   const corrections: MoistureCorrectionResult[] = [];
   let totalWaterReduction = 0;
   let totalAggregateAdjustment = 0;
+  let maxAgeHours = 0;
 
   for (const ingredient of ingredients) {
     if (ingredient.category !== 'fine_aggregate' && ingredient.category !== 'coarse_aggregate') {
@@ -603,6 +611,11 @@ export async function calculateMoistureCorrection(
     if (ageHours > config.moistureDataMaxAgeHours) {
       // Stale data - skip correction
       continue;
+    }
+    
+    // Track maximum age
+    if (ageHours > maxAgeHours) {
+      maxAgeHours = ageHours;
     }
 
     // Calculate corrections
@@ -664,7 +677,7 @@ export async function calculateMoistureCorrection(
     correctedWaterWeight: Math.round(correctedWaterWeight * 100) / 100,
     correctedBatchWeight: Math.round(correctedBatchWeight * 100) / 100,
     calculatedAt: new Date().toISOString(),
-    moistureDataAge: ageHours,
+    moistureDataAge: maxAgeHours,
   };
 }
 

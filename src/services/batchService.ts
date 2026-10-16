@@ -8,7 +8,7 @@ import { generateId } from './utils';
 import { recordAudit } from './audit';
 import { raiseAlert } from './alerts';
 import { getPlant } from './rmcPlantService';
-import { getMixDesign } from './mixDesignService';
+import { getMixDesign, getRevisionByNumber } from './mixDesignService';
 
 const batchesStore = storage.getAdapter<BatchRecord>('batch_records');
 const toleranceConfigStore = storage.getAdapter<WeighingToleranceConfig>('weighing_tolerance_config');
@@ -40,7 +40,7 @@ export async function createBatch(
     }
     
     // Check if revision is approved
-    const revision = mixDesign.revisions.find(r => r.revisionNumber === data.mixDesignRevision);
+    const revision = await getRevisionByNumber(data.mixDesignId, data.mixDesignRevision);
     if (!revision) {
       throw new Error(`Mix design revision ${data.mixDesignRevision} not found`);
     }

@@ -18,8 +18,8 @@
 | 11 | Preventive & Corrective Maintenance, Workshop, Spare Parts & Reliability | 3 | ✅ Complete | 2026-01-28 | [part-11-report.md](parts/part-11-report.md) |
 | 12 | External Integration Hub | 3 | ✅ Complete | 2026-01-28 | [part-12-report.md](parts/part-12-report.md) |
 | 13 | RMC Plant Master, Equipment & Production Operations | 4 | ✅ Complete | 2026-01-28 | [part-13-report.md](parts/part-13-report.md) |
-| 14 | Finance: GST, E-Invoice, E-Way Bill | 4 | 🔲 Not started | — | — |
-| 15 | Dashboards: Configurable KPIs, Reports | 4 | 🔲 Not started | — | — |
+| 14 | Mix Design Management | 4 | ✅ Complete | 2026-01-28 | [part-14-report.md](parts/part-14-report.md) |
+| 15 | RMC Material Inventory & Production Reconciliation | 4 | ✅ Complete | 2026-01-28 | [part-15-report.md](parts/part-15-report.md) |
 | 16 | Alerts: Rule Engine, Thresholds, Delivery | 4 | 🔲 Not started | — | — |
 | 17 | Inventory & Procurement | 5 | 🔲 Not started | — | — |
 | 18 | HR & Payroll | 5 | 🔲 Not started | — | — |
