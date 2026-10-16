@@ -79,7 +79,7 @@ export async function updateMixDesignConfiguration(
 // ============================================================================
 
 export async function createMixDesign(
-   Omit<MixDesign, 'id' | 'createdAt' | 'updatedAt' | 'currentRevision' | 'totalBinder' | 'waterBinderRatio' | 'scmReplacementPercent' | 'theoreticalDensity'>
+  data: Omit<MixDesign, 'id' | 'createdAt' | 'updatedAt' | 'currentRevision' | 'totalBinder' | 'waterBinderRatio' | 'scmReplacementPercent' | 'theoreticalDensity'>
 ): Promise<MixDesign> {
   // Calculate derived parameters
   const derived = calculateDerivedParameters(data.ingredients);
@@ -258,7 +258,7 @@ function calculateDerivedParameters(ingredients: MixDesignIngredient[]): {
 
 export async function createRevision(
   mixDesignId: string,
-   Omit<MixDesignRevision, 'id' | 'createdAt' | 'updatedAt'>
+  data: Omit<MixDesignRevision, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<MixDesignRevision> {
   const mixDesign = await mixDesignsStore.findById(mixDesignId);
   if (!mixDesign) {
@@ -501,7 +501,7 @@ export async function suspendRevision(
 // ============================================================================
 
 export async function addMoistureData(
-   Omit<AggregateMoistureData, 'id' | 'createdAt' | 'updatedAt' | 'isStale'>
+  data: Omit<AggregateMoistureData, 'id' | 'createdAt' | 'updatedAt' | 'isStale'>
 ): Promise<AggregateMoistureData> {
   const config = await getMixDesignConfiguration();
   const validUntil = new Date();
@@ -765,7 +765,7 @@ export async function calculateTheoreticalRequirements(
 // ============================================================================
 
 export async function createTrial(
-   Omit<MixDesignTrial, 'id' | 'trialNumber' | 'createdAt' | 'updatedAt'>
+  data: Omit<MixDesignTrial, 'id' | 'trialNumber' | 'createdAt' | 'updatedAt'>
 ): Promise<MixDesignTrial> {
   const trialNumber = `TRIAL-${Date.now()}`;
 
