@@ -315,6 +315,7 @@ export interface IngredientTolerance {
 // ============================================================================
 
 export interface PlantKPIs {
+  id: string;
   plantId: string;
   period: {
     startDate: string;

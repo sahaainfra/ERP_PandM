@@ -17,7 +17,7 @@
 | 10 | Daily Calibrated Fuel Consumption Verification | 3 | ✅ Complete | 2026-01-28 | [part-10-report.md](parts/part-10-report.md) |
 | 11 | Preventive & Corrective Maintenance, Workshop, Spare Parts & Reliability | 3 | ✅ Complete | 2026-01-28 | [part-11-report.md](parts/part-11-report.md) |
 | 12 | External Integration Hub | 3 | ✅ Complete | 2026-01-28 | [part-12-report.md](parts/part-12-report.md) |
-| 13 | Finance: Project Costing, Budget vs Actual | 4 | 🔲 Not started | — | — |
+| 13 | RMC Plant Master, Equipment & Production Operations | 4 | ✅ Complete | 2026-01-28 | [part-13-report.md](parts/part-13-report.md) |
 | 14 | Finance: GST, E-Invoice, E-Way Bill | 4 | 🔲 Not started | — | — |
 | 15 | Dashboards: Configurable KPIs, Reports | 4 | 🔲 Not started | — | — |
 | 16 | Alerts: Rule Engine, Thresholds, Delivery | 4 | 🔲 Not started | — | — |

@@ -372,3 +372,41 @@
 - **Rationale**: Prevents secrets in code or logs
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-070: Plant Equipment as Assets *(Added Part 13)*
+- **Decision**: Plant equipment registered as assets (Part 04) linked to plant
+- **Rationale**: Reuse existing asset management, maintenance, and fuel tracking
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-071: Manual Entry Requires Approval *(Added Part 13)*
+- **Decision**: Manual batch entry requires supervisor approval
+- **Rationale**: Ensures data quality when integration unavailable
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-072: Source Labels on All Data *(Added Part 13)*
+- **Decision**: Every batch carries source label (integrated_live, imported, manual)
+- **Rationale**: Transparency about data origin and quality
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-073: Configurable Tolerances *(Added Part 13)*
+- **Decision**: Weighing tolerances configurable per ingredient type
+- **Rationale**: Different materials have different precision requirements
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-074: Read-Only Plant Integration *(Added Part 13)*
+- **Decision**: Batches imported from PLC/SCADA are read-only
+- **Rationale**: Safety-critical systems must not be modified by ERP
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-075: KPI Storage by Period *(Added Part 13)*
+- **Decision**: KPIs calculated and stored for specific date ranges
+- **Rationale**: Enables historical analysis and comparison
+- **Date**: 2026-01-28
+- **Status**: Active

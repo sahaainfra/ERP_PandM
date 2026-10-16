@@ -63,6 +63,12 @@ import * as integrationFrameworkService from './integrationFramework';
 import * as telematicsAdapterService from './telematicsAdapter';
 import * as batchingWeighbridgeAdapterService from './batchingWeighbridgeAdapter';
 import * as notificationAdaptersService from './notificationAdapters';
+import * as rmcPlantService from './rmcPlantService';
+import * as batchService from './batchService';
+import * as productionOrderService from './productionOrderService';
+import * as stoppageService from './stoppageService';
+import * as plantKPIService from './plantKPIService';
+import * as mixDesignService from './mixDesignService';
 
 export {
   mastersService as masters,
@@ -101,6 +107,12 @@ export {
   telematicsAdapterService as telematicsAdapter,
   batchingWeighbridgeAdapterService as batchingWeighbridgeAdapter,
   notificationAdaptersService as notificationAdapters,
+  rmcPlantService as rmcPlant,
+  batchService as batch,
+  productionOrderService as productionOrder,
+  stoppageService as stoppage,
+  plantKPIService as plantKPI,
+  mixDesignService as mixDesign,
 };
 
 // ============================================================================
@@ -119,6 +131,8 @@ import * as fuelMasters from './fuelMasters';
 import * as benchmark from './benchmarkService';
 import * as pmPlan from './pmPlanService';
 import * as integrationFramework from './integrationFramework';
+import * as rmcPlant from './rmcPlantService';
+import * as batch from './batchService';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -178,6 +192,14 @@ export async function initializePlatform(): Promise<void> {
   // Seed integration connectors (Part 12)
   await integrationFramework.seedDefaultConnectors();
   logger.info('Integration connectors seeded');
+
+  // Seed RMC plants (Part 13)
+  await rmcPlant.seedDefaultPlants();
+  logger.info('RMC plants seeded');
+
+  // Seed weighing tolerance config (Part 13)
+  await batch.seedDefaultToleranceConfig();
+  logger.info('Weighing tolerance config seeded');
 
   logger.info('Platform initialization complete');
 }

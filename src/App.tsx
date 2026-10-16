@@ -31,6 +31,8 @@ import PMPlanList from './pages/PMPlanList';
 import ReliabilityDashboard from './pages/ReliabilityDashboard';
 import IntegrationDashboard from './pages/IntegrationDashboard';
 import TelematicsDashboard from './pages/TelematicsDashboard';
+import PlantList from './pages/PlantList';
+import PlantControlBoard from './pages/PlantControlBoard';
 
 export default function App() {
   return (
@@ -69,6 +71,8 @@ export default function App() {
           <Route path="/maintenance/reliability" element={<ReliabilityDashboard />} />
           <Route path="/integrations" element={<IntegrationDashboard />} />
           <Route path="/integrations/telematics" element={<TelematicsDashboard />} />
+          <Route path="/rmc/plants" element={<PlantList />} />
+          <Route path="/rmc/plants/:id" element={<PlantControlBoard />} />
         </Routes>
       </Layout>
     </BrowserRouter>
