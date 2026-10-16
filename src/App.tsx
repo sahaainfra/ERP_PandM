@@ -29,6 +29,8 @@ import CalibrationRegister from './pages/CalibrationRegister';
 import WorkOrderList from './pages/WorkOrderList';
 import PMPlanList from './pages/PMPlanList';
 import ReliabilityDashboard from './pages/ReliabilityDashboard';
+import IntegrationDashboard from './pages/IntegrationDashboard';
+import TelematicsDashboard from './pages/TelematicsDashboard';
 
 export default function App() {
   return (
@@ -65,6 +67,8 @@ export default function App() {
           <Route path="/maintenance/work-orders" element={<WorkOrderList />} />
           <Route path="/maintenance/pm-plans" element={<PMPlanList />} />
           <Route path="/maintenance/reliability" element={<ReliabilityDashboard />} />
+          <Route path="/integrations" element={<IntegrationDashboard />} />
+          <Route path="/integrations/telematics" element={<TelematicsDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>

@@ -48,11 +48,14 @@
 
 | Integration | Reason Unavailable | Interface Status |
 |-------------|-------------------|-----------------|
-| GPS Tracking | No devices configured | Placeholder UI in RMC dispatch tab |
-| Fuel IoT Meters | No meters installed | Manual entry with variance calculation |
-| Weighbridge | No weighbridge connected | Not yet implemented |
-| PLC/SCADA (Batch Plant) | No plant automation interface | Not yet implemented |
+| GPS Tracking (Telematics) | No Trimble/Samsara devices configured | ✅ Adapter interface built (Part 12), marked unavailable |
+| Fuel IoT Meters | No meters installed | ✅ Adapter interface built (Part 12), marked unavailable |
+| Weighbridge | No Mettler Toledo weighbridge connected | ✅ Adapter interface built (Part 12), marked unavailable |
+| PLC/SCADA (Batch Plant) | No Schwing Stetter plant automation interface | ✅ Adapter interface built (Part 12), marked unavailable, read-only |
 | Bank Payment Gateway | No bank credentials | Not yet implemented |
 | GST E-Invoice IRP | No GSTN credentials | Not yet implemented |
-| SMS Gateway | No provider configured | Not yet implemented |
-| Email (SMTP) | No SMTP credentials | Not yet implemented |
+| SMS Gateway (MSG91/Twilio) | No provider configured | ✅ Adapter interface built (Part 12), marked unavailable |
+| Email (SMTP) | No SMTP credentials | ✅ Adapter interface built (Part 12), marked unavailable |
+| Push Notifications (FCM/APNs) | No credentials configured | ✅ Adapter interface built (Part 12), marked unavailable |
+| Maps (Google/MapmyIndia) | No API key configured | ✅ Adapter interface built (Part 12), marked unavailable |
+| File Storage (AWS S3/Azure) | No credentials configured | ✅ Adapter interface built (Part 12), marked unavailable |

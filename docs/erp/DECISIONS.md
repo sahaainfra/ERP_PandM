@@ -328,3 +328,47 @@
 - **Rationale**: Ensures financial accountability
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-063: Never Simulate Working Integration *(Added Part 12)*
+- **Decision**: All connectors marked `unavailable` unless real credentials configured
+- **Rationale**: Prevents false confidence in data quality
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-064: Canonical Internal Events *(Added Part 12)*
+- **Decision**: Map provider formats to canonical events
+- **Rationale**: Modules never depend on vendor formats
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-065: Idempotent Event Processing *(Added Part 12)*
+- **Decision**: Duplicate webhooks create one record
+- **Rationale**: Prevents data duplication from retries
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-066: Exponential Back-off Retry *(Added Part 12)*
+- **Decision**: Retry with 1min, 5min, 25min back-off
+- **Rationale**: Prevents overwhelming failed services
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-067: Dead Letter Queue for Failed Events *(Added Part 12)*
+- **Decision**: Store failed events for admin replay
+- **Rationale**: Allows manual intervention and investigation
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-068: Read-Only Plant Integration *(Added Part 12)*
+- **Decision**: ERP never writes set-points to plant control systems
+- **Rationale**: Safety-critical systems must not be controlled by ERP
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-069: Secrets in External Manager *(Added Part 12)*
+- **Decision**: Store secrets in AWS Secrets Manager / Azure Key Vault
+- **Rationale**: Prevents secrets in code or logs
+- **Date**: 2026-01-28
+- **Status**: Active

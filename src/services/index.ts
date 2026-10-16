@@ -59,6 +59,10 @@ import * as investigationService from './investigationService';
 import * as pmPlanService from './pmPlanService';
 import * as workOrderService from './workOrderService';
 import * as reliabilityMetricsService from './reliabilityMetricsService';
+import * as integrationFrameworkService from './integrationFramework';
+import * as telematicsAdapterService from './telematicsAdapter';
+import * as batchingWeighbridgeAdapterService from './batchingWeighbridgeAdapter';
+import * as notificationAdaptersService from './notificationAdapters';
 
 export {
   mastersService as masters,
@@ -93,6 +97,10 @@ export {
   pmPlanService as pmPlan,
   workOrderService as workOrder,
   reliabilityMetricsService as reliabilityMetrics,
+  integrationFrameworkService as integrationFramework,
+  telematicsAdapterService as telematicsAdapter,
+  batchingWeighbridgeAdapterService as batchingWeighbridgeAdapter,
+  notificationAdaptersService as notificationAdapters,
 };
 
 // ============================================================================
@@ -110,6 +118,7 @@ import * as workflowConfig from './workflowConfig';
 import * as fuelMasters from './fuelMasters';
 import * as benchmark from './benchmarkService';
 import * as pmPlan from './pmPlanService';
+import * as integrationFramework from './integrationFramework';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -165,6 +174,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed PM plans (Part 11)
   await pmPlan.seedDefaultPMPlans();
   logger.info('PM plans seeded');
+
+  // Seed integration connectors (Part 12)
+  await integrationFramework.seedDefaultConnectors();
+  logger.info('Integration connectors seeded');
 
   logger.info('Platform initialization complete');
 }

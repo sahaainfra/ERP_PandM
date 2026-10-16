@@ -21,6 +21,8 @@ const navItems = [
   { path: '/maintenance/work-orders', label: 'Work Orders', icon: Truck },
   { path: '/maintenance/pm-plans', label: 'PM Plans', icon: Truck },
   { path: '/maintenance/reliability', label: 'Reliability', icon: Truck },
+  { path: '/integrations', label: 'Integrations', icon: Truck },
+  { path: '/integrations/telematics', label: 'Telematics', icon: Truck },
   { path: '/rmc', label: 'RMC Operations', icon: Factory },
   { path: '/chat', label: 'Team Chat', icon: MessageSquare },
   { path: '/finance', label: 'Finance & Costing', icon: DollarSign },
