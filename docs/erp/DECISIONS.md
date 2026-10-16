@@ -442,3 +442,35 @@
 - **Rationale**: Prevents alert fatigue from repeated notifications
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-091: Single Source of Truth for Postings *(Added Part 21)*
+- **Decision**: Each operational event creates at most one active posting set
+- **Rationale**: Prevents double counting and ensures traceability
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-092: Period-Based Posting Controls *(Added Part 21)*
+- **Decision**: No posting into closed periods; adjustments in open periods only
+- **Rationale**: Ensures financial period integrity
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-093: Reversal by Reference *(Added Part 21)*
+- **Decision**: Reversals reference the original posting and create a new posting
+- **Rationale**: Maintains complete audit trail and traceability
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-094: Cost Allocation Methods *(Added Part 21)*
+- **Decision**: Each allocation method (per m³, per batch hour, per trip, per km) is configured and versioned
+- **Rationale**: Transparency in cost calculation methodology
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-095: GST Treatment *(Added Part 21)*
+- **Decision**: Support for CGST/SGST (intra-state) and IGST (inter-state) based on place of supply
+- **Rationale**: Compliance with Indian GST regulations
+- **Date**: 2026-01-28
+- **Status**: Active

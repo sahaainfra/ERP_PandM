@@ -69,6 +69,8 @@ import * as productionOrderService from './productionOrderService';
 import * as stoppageService from './stoppageService';
 import * as plantKPIService from './plantKPIService';
 import * as mixDesignService from './mixDesignService';
+import * as postingService from './postingService';
+import * as costingService from './costingService';
 
 export {
   mastersService as masters,
@@ -113,6 +115,8 @@ export {
   stoppageService as stoppage,
   plantKPIService as plantKPI,
   mixDesignService as mixDesign,
+  postingService as posting,
+  costingService as costing,
 };
 
 // ============================================================================
@@ -133,6 +137,7 @@ import * as pmPlan from './pmPlanService';
 import * as integrationFramework from './integrationFramework';
 import * as rmcPlant from './rmcPlantService';
 import * as batch from './batchService';
+import * as posting from './postingService';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -200,6 +205,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed weighing tolerance config (Part 13)
   await batch.seedDefaultToleranceConfig();
   logger.info('Weighing tolerance config seeded');
+
+  // Seed posting rules (Part 21)
+  await posting.seedDefaultPostingRules();
+  logger.info('Posting rules seeded');
 
   logger.info('Platform initialization complete');
 }
