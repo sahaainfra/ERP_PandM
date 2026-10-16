@@ -272,7 +272,6 @@ export interface FreshConcreteTest {
   
   // Time tracking
   batchingTime?: string;
-  testTime?: string;
   transitTime?: number; // minutes
   
   // Acceptance
