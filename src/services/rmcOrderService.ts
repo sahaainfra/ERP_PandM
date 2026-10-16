@@ -16,7 +16,7 @@ const ordersStore = storage.getAdapter<RMCOrder>('rmc_orders');
 // ============================================================================
 
 export async function createRMCOrder(
-   Omit<RMCOrder, 'id' | 'orderNumber' | 'deliveredQuantity' | 'remainingQuantity' | 'status' | 'creditApproved' | 'technicalApproved' | 'revisionNumber' | 'revisionHistory' | 'productionOrderIds' | 'createdAt' | 'updatedAt'>
+  data: Omit<RMCOrder, 'id' | 'orderNumber' | 'deliveredQuantity' | 'remainingQuantity' | 'status' | 'creditApproved' | 'technicalApproved' | 'revisionNumber' | 'revisionHistory' | 'productionOrderIds' | 'createdAt' | 'updatedAt'>
 ): Promise<RMCOrder> {
   // Generate order number
   const orderNumber = `RMC-${Date.now()}`;
@@ -61,7 +61,7 @@ export async function createRMCOrder(
     before: null,
     after: order as any,
     actorId: data.createdBy,
-    actorRole: 'sales_executive',
+    actorRole: 'dispatch_manager',
     requestId: generateId(),
     reason: `RMC order ${orderNumber} created`,
   });
@@ -132,7 +132,7 @@ export async function updateRMCOrder(
     before: order as any,
     after: updated as any,
     actorId: userId,
-    actorRole: 'sales_executive',
+    actorRole: 'dispatch_manager',
     requestId: generateId(),
     reason: 'RMC order updated',
   });
@@ -169,7 +169,7 @@ export async function submitOrder(
     before: { status: 'draft' },
     after: { status: 'submitted' },
     actorId: userId,
-    actorRole: 'sales_executive',
+    actorRole: 'dispatch_manager',
     requestId: generateId(),
     reason: 'Order submitted for approval',
   });
@@ -208,7 +208,7 @@ export async function cancelOrder(
     before: { status: order.status },
     after: { status: 'cancelled', reason, cancellationCharges },
     actorId: userId,
-    actorRole: 'sales_manager',
+    actorRole: 'dispatch_manager',
     requestId: generateId(),
     reason: `Order cancelled: ${reason}`,
   });
@@ -261,7 +261,7 @@ export async function createOrderRevision(
     before: previousValues,
     after: newValues,
     actorId: userId,
-    actorRole: 'sales_executive',
+    actorRole: 'dispatch_manager',
     requestId: generateId(),
     reason: `Order revised (v${revision.revisionNumber}): ${reason}`,
   });
@@ -282,7 +282,7 @@ export async function createOrderRevision(
       module: 'RMC Orders',
       entityType: 'RMCOrder',
       entityId: orderId,
-      responsibleRole: 'sales_manager',
+      responsibleRole: 'dispatch_manager',
       recommendedAction: 'Review and approve revised order',
       dueInHours: 24,
       requestId: generateId(),

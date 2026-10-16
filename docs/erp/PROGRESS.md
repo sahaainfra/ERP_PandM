@@ -21,8 +21,8 @@
 | 14 | Mix Design Management | 4 | ✅ Complete | 2026-01-28 | [part-14-report.md](parts/part-14-report.md) |
 | 15 | RMC Material Inventory & Production Reconciliation | 4 | ✅ Complete | 2026-01-28 | [part-15-report.md](parts/part-15-report.md) |
 | 16 | Alerts: Rule Engine, Thresholds, Delivery | 4 | 🔲 Not started | — | — |
-| 17 | Inventory & Procurement | 5 | 🔲 Not started | — | — |
-| 18 | HR & Payroll | 5 | 🔲 Not started | — | — |
+| 17 | RMC Orders and Production Scheduling | 5 | ✅ Complete | 2026-01-28 | [part-17-report.md](parts/part-17-report.md) |
+| 18 | Dispatch, Delivery, Transit Mixers and Pumps | 5 | ✅ Complete | 2026-01-28 | [part-18-report.md](parts/part-18-report.md) |
 | 19 | Document Management | 5 | 🔲 Not started | — | — |
 | 20 | Integrations: GPS, Fuel IoT, Weighbridge | 5 | 🔲 Not started | — | — |
 | 21 | Offline/PWA & Mobile Optimization | 5 | 🔲 Not started | — | — |

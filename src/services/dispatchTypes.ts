@@ -15,7 +15,7 @@ export type DispatchStatus =
   | 'in_transit'
   | 'at_site'
   | 'unloading'
-  | 'delivered'
+  | 'completed'
   | 'returned'
   | 'rejected'
   | 'cancelled';
@@ -24,18 +24,24 @@ export interface Dispatch {
   id: string;
   dispatchNumber: string;
   
-  // Links
+  // Order link
   orderId: string;
   orderNumber: string;
+  
+  // Batch link
   batchId: string;
   batchNumber: string;
-  productionOrderId?: string;
   
-  // Transit mixer
+  // Plant
+  plantId: string;
+  plantName: string;
+  
+  // Vehicle and driver
   mixerId: string;
   mixerNumber: string;
   driverId: string;
   driverName: string;
+  driverLicenceNumber: string;
   
   // Pump (if required)
   pumpId?: string;
@@ -43,21 +49,31 @@ export interface Dispatch {
   pumpOperatorId?: string;
   
   // Delivery site
-  siteName: string;
-  siteAddress: string;
+  deliverySiteName: string;
+  deliverySiteAddress: string;
+  deliverySiteCoordinates?: { lat: number; lng: number };
   siteContactName?: string;
   siteContactPhone?: string;
-  siteCoordinates?: { lat: number; lng: number };
   
-  // Quantity
+  // Product details
+  grade: string;
+  mixDesignId: string;
+  mixDesignRevision: number;
+  
+  // Quantities
   dispatchedQuantity: number; // m³
   deliveredQuantity?: number; // m³
   returnedQuantity?: number; // m³
   rejectedQuantity?: number; // m³
   wastedQuantity?: number; // m³
   
+  // Challan
+  challanNumber: string;
+  challanGeneratedAt: string;
+  sealNumber?: string;
+  
   // Timestamps
-  scheduledTime: string;
+  scheduledLoadingTime: string;
   loadingStartTime?: string;
   loadingEndTime?: string;
   plantDepartureTime?: string;
@@ -70,38 +86,203 @@ export interface Dispatch {
   // Source labels for timestamps
   timestampSources: Record<string, 'manual' | 'gps' | 'driver_app'>;
   
-  // Batch ticket and challan
-  batchTicketId?: string;
-  batchTicketNumber?: string;
-  challanId?: string;
-  challanNumber?: string;
-  sealNumber?: string;
+  // Transit tracking
+  expectedTransitMinutes: number;
+  actualTransitMinutes?: number;
+  transitDistance?: number; // km
   
   // Site receipt
   receiverName?: string;
-  receiptMethod?: 'signature' | 'otp' | 'photo';
-  receiptEvidenceId?: string; // Attachment ID
-  receiptTime?: string;
+  receiverSignature?: string; // Attachment ID
+  receiverOTP?: string;
+  receiverPhoto?: string; // Attachment ID
+  receiptConfirmedAt?: string;
   
   // Status
   status: DispatchStatus;
   
   // Exceptions
-  delayDetected: boolean;
+  hasDelay: boolean;
   delayReason?: string;
+  siteWaitingMinutes?: number;
   concreteAgeAtUnloading?: number; // minutes
-  ageLimitExceeded: boolean;
+  concreteAgeExceeded: boolean;
   
   // Returns/Rejections
   returnReason?: string;
   rejectionReason?: string;
-  rejectionQcLinkId?: string; // Link to Part 16 NCR
-  returnDisposition?: 'reuse' | 'waste' | 'other';
-  returnDispositionApprovedBy?: string;
-  returnDispositionApprovedAt?: string;
+  qcReportId?: string; // Link to Part 16
+  disposition?: 'reuse' | 'waste' | 'other';
+  dispositionApprovedBy?: string;
+  dispositionApprovedAt?: string;
   
-  // Trip log
-  tripLogId?: string;
+  // Costs (for Part 21)
+  fuelCost?: number;
+  driverCost?: number;
+  maintenanceCost?: number;
+  tollCost?: number;
+  pumpCost?: number;
+  totalTransportCost?: number;
+  
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+// ============================================================================
+// Transit Mixer Trip
+// ============================================================================
+
+export interface MixerTrip {
+  id: string;
+  tripNumber: string;
+  
+  // Mixer
+  mixerId: string;
+  mixerNumber: string;
+  drumCapacity: number; // m³
+  
+  // Driver
+  driverId: string;
+  driverName: string;
+  
+  // Trip details
+  date: string;
+  startTime: string;
+  endTime?: string;
+  
+  // Route
+  plantId: string;
+  plantName: string;
+  deliverySiteName: string;
+  deliverySiteAddress: string;
+  
+  // Load
+  loadQuantity: number; // m³
+  batchId: string;
+  batchNumber: string;
+  
+  // Dispatch link
+  dispatchId: string;
+  
+  // Kilometres and hours (for logbook)
+  startOdometer?: number;
+  endOdometer?: number;
+  tripKilometres?: number;
+  drumHours?: number;
+  
+  // Fuel
+  fuelConsumed?: number; // litres
+  
+  // Status
+  status: 'planned' | 'in_progress' | 'completed' | 'cancelled';
+  
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ============================================================================
+// Concrete Pump Booking
+// ============================================================================
+
+export type PumpBookingStatus = 'booked' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+
+export interface PumpBooking {
+  id: string;
+  bookingNumber: string;
+  
+  // Pump
+  pumpId: string;
+  pumpNumber: string;
+  pumpType: 'boom' | 'line' | 'static';
+  boomLength?: number; // meters
+  
+  // Operator
+  operatorId: string;
+  operatorName: string;
+  
+  // Order link
+  orderId: string;
+  orderNumber: string;
+  
+  // Site
+  siteName: string;
+  siteAddress: string;
+  
+  // Schedule
+  bookingDate: string;
+  startTime: string;
+  endTime: string;
+  
+  // Actual times
+  actualStartTime?: string;
+  actualEndTime?: string;
+  
+  // Pumping details
+  pumpingHours?: number;
+  quantityPumped?: number; // m³
+  lineLength?: number; // meters
+  boomUsed?: number; // meters
+  
+  // Dispatches served
+  dispatchIds: string[];
+  
+  // Costs
+  deploymentCost?: number;
+  pumpingCharges?: number;
+  totalCost?: number;
+  
+  // Status
+  status: PumpBookingStatus;
+  
+  // Metadata
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+// ============================================================================
+// Delivery Challan
+// ============================================================================
+
+export interface DeliveryChallan {
+  id: string;
+  challanNumber: string;
+  
+  // Order
+  orderId: string;
+  orderNumber: string;
+  
+  // Plant
+  plantId: string;
+  plantName: string;
+  
+  // Dispatches
+  dispatchIds: string[];
+  
+  // Summary
+  totalQuantity: number; // m³
+  batchNumbers: string[];
+  grade: string;
+  mixDesignCode: string;
+  
+  // Vehicle
+  mixerNumber: string;
+  driverName: string;
+  driverLicenceNumber: string;
+  
+  // Site
+  siteName: string;
+  siteAddress: string;
+  
+  // Timestamps
+  generatedAt: string;
+  printedAt?: string;
+  
+  // PDF
+  pdfAttachmentId?: string;
   
   // Metadata
   createdAt: string;
@@ -117,461 +298,131 @@ export interface BatchTicket {
   id: string;
   ticketNumber: string;
   
-  // Batch details
+  // Batch
   batchId: string;
   batchNumber: string;
+  
+  // Plant
   plantId: string;
   plantName: string;
   
-  // Mix design
+  // Product
   grade: string;
-  mixDesignId: string;
+  mixDesignCode: string;
   mixDesignRevision: number;
   
   // Quantity
-  quantity: number; // m³
+  volume: number; // m³
   
   // Timestamps
-  batchingTime: string;
+  batchingStartTime: string;
+  batchingEndTime: string;
   ticketGeneratedAt: string;
   
-  // Vehicle and driver
-  mixerId: string;
-  mixerNumber: string;
-  driverId: string;
-  driverName: string;
-  
-  // Seal
-  sealNumber?: string;
-  
-  // Delivery site
-  siteName: string;
-  siteAddress: string;
-  
-  // Order reference
-  orderId: string;
-  orderNumber: string;
-  
-  // PDF
-  pdfAttachmentId?: string;
-  
-  createdAt: string;
-}
-
-// ============================================================================
-// Delivery Challan
-// ============================================================================
-
-export interface DeliveryChallan {
-  id: string;
-  challanNumber: string;
-  
-  // Links
-  dispatchId: string;
-  orderId: string;
-  orderNumber: string;
-  
-  // Customer/Project
-  customerId?: string;
-  customerName?: string;
-  projectId?: string;
-  projectName?: string;
-  
-  // Delivery details
-  siteName: string;
-  siteAddress: string;
-  
-  // Product details
-  grade: string;
-  mixDesignCode: string;
-  quantity: number; // m³
-  ratePerM3: number;
-  totalAmount: number;
-  
-  // Batch references
-  batchNumbers: string[];
-  
-  // Vehicle and driver
-  mixerNumber: string;
-  driverName: string;
-  
-  // Timestamps
-  challanDate: string;
-  plantDepartureTime: string;
-  siteArrivalTime?: string;
-  
-  // Receipt
-  receiverName?: string;
-  receiptTime?: string;
-  receiptMethod?: string;
-  
-  // PDF
-  pdfAttachmentId?: string;
-  
-  createdAt: string;
-  updatedAt: string;
-}
-
-// ============================================================================
-// Transit Mixer
-// ============================================================================
-
-export interface TransitMixerStatus {
-  mixerId: string;
-  mixerNumber: string;
-  
-  // Current status
-  availabilityStatus: 'available' | 'on_trip' | 'maintenance' | 'safety_hold' | 'out_of_service';
-  
-  // Current trip
-  currentDispatchId?: string;
-  currentTripStatus?: DispatchStatus;
-  
-  // Driver
-  currentDriverId?: string;
-  currentDriverName?: string;
-  driverLicenceValid: boolean;
-  
-  // Documents
-  mandatoryDocumentsValid: boolean;
-  expiredDocuments: string[];
-  
-  // Maintenance
-  lastMaintenanceDate?: string;
-  nextMaintenanceDate?: string;
-  
-  // Location (from GPS)
-  lastKnownLocation?: { lat: number; lng: number };
-  lastLocationUpdate?: string;
-  
-  // Trip statistics (today)
-  tripsCompletedToday: number;
-  totalDistanceToday: number; // km
-  totalDrumHoursToday: number;
-  
-  updatedAt: string;
-}
-
-// ============================================================================
-// Trip Log
-// ============================================================================
-
-export interface TripLog {
-  id: string;
-  tripNumber: string;
-  
-  // Links
-  dispatchId: string;
-  mixerId: string;
-  driverId: string;
-  
-  // Route
-  plantId: string;
-  plantLocation: { lat: number; lng: number };
-  siteId?: string;
-  siteLocation?: { lat: number; lng: number };
-  
-  // Distances and times
-  plannedDistance: number; // km
-  actualDistance: number; // km
-  plannedDuration: number; // minutes
-  actualDuration: number; // minutes
-  
-  // Drum operation
-  drumStartTime: string;
-  drumEndTime: string;
-  drumHours: number;
-  
-  // Fuel
-  fuelConsumed: number; // litres
-  fuelCost: number;
-  
-  // Costs
-  driverCost: number;
-  maintenanceCost: number;
-  tollCost: number;
-  totalCost: number;
-  
-  // GPS track
-  gpsTrackPoints: GpsTrackPoint[];
-  
-  // Metadata
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface GpsTrackPoint {
-  timestamp: string;
-  latitude: number;
-  longitude: number;
-  speed?: number; // km/h
-  heading?: number; // degrees
-}
-
-// ============================================================================
-// Concrete Pump
-// ============================================================================
-
-export interface PumpBooking {
-  id: string;
-  bookingNumber: string;
-  
-  // Links
-  orderId: string;
-  dispatchId?: string;
-  
-  // Pump details
-  pumpId: string;
-  pumpNumber: string;
-  pumpType: 'boom' | 'line' | 'static';
-  boomLength?: number; // meters
-  
   // Operator
-  operatorId: string;
   operatorName: string;
   
-  // Schedule
-  scheduledDate: string;
-  scheduledStartTime: string;
-  scheduledEndTime: string;
-  
-  // Site
-  siteName: string;
-  siteAddress: string;
-  
-  // Actual times
-  actualStartTime?: string;
-  actualEndTime?: string;
-  pumpingHours?: number;
-  
-  // Quantity
-  quantityPumped?: number; // m³
-  
-  // Deployment details
-  lineLength?: number; // meters
-  boomUsed?: number; // meters
-  
-  // Costs
-  deploymentCost: number;
-  pumpingCharges: number;
-  totalCost: number;
-  
-  // Status
-  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  // PDF
+  pdfAttachmentId?: string;
   
   // Metadata
   createdAt: string;
   updatedAt: string;
-  createdBy: string;
 }
 
 // ============================================================================
-// Exceptions and Delays
+// Exception Detection
 // ============================================================================
+
+export type ExceptionType = 
+  | 'DISPATCH_DELAY'
+  | 'TRANSIT_DELAY'
+  | 'SITE_WAITING_EXCESS'
+  | 'CONCRETE_AGE_LIMIT'
+  | 'OVERLOAD_ATTEMPT'
+  | 'SAFETY_HOLD_VIOLATION'
+  | 'INVALID_LICENCE';
 
 export interface DispatchException {
   id: string;
   dispatchId: string;
   
-  // Exception type
-  type: 'delay' | 'waiting_excess' | 'concrete_age' | 'rejection' | 'return';
-  code: string; // e.g., 'DISPATCH_DELAY', 'SITE_WAITING_EXCESS', 'CONCRETE_AGE_LIMIT'
-  
-  // Details
-  description: string;
+  // Exception details
+  exceptionType: ExceptionType;
   severity: 'info' | 'warning' | 'critical';
+  title: string;
+  description: string;
   
-  // Metrics
-  expectedValue?: number;
-  actualValue?: number;
+  // Thresholds
   thresholdValue?: number;
+  actualValue?: number;
   unit?: string;
   
-  // Detection
-  detectedAt: string;
-  detectedBy: string; // 'system' | 'driver' | 'site_receiver' | 'qc_manager'
-  
-  // Resolution
-  resolved: boolean;
-  resolvedAt?: string;
-  resolvedBy?: string;
+  // Status
+  acknowledged: boolean;
+  acknowledgedBy?: string;
+  acknowledgedAt?: string;
   resolutionNotes?: string;
   
   // Alert
   alertRaised: boolean;
   alertId?: string;
   
+  // Metadata
+  detectedAt: string;
   createdAt: string;
 }
 
 // ============================================================================
-// Driver Mobile App
+// Driver Mobile Events
 // ============================================================================
 
-export interface DriverTripAssignment {
+export type DriverEventType = 
+  | 'trip_started'
+  | 'loading_started'
+  | 'loading_completed'
+  | 'departed_plant'
+  | 'arrived_site'
+  | 'unloading_started'
+  | 'unloading_completed'
+  | 'departed_site'
+  | 'returned_plant'
+  | 'receipt_confirmed'
+  | 'issue_reported';
+
+export interface DriverEvent {
+  id: string;
+  clientUuid: string; // For offline sync
+  idempotencyKey: string;
+  
+  // Event
+  eventType: DriverEventType;
   dispatchId: string;
-  dispatchNumber: string;
-  orderNumber: string;
+  tripId: string;
   
-  // Site
-  siteName: string;
-  siteAddress: string;
-  siteContactName?: string;
-  siteContactPhone?: string;
-  siteCoordinates?: { lat: number; lng: number };
+  // Timestamps
+  clientCaptureTime: string; // When driver captured
+  serverReceiptTime?: string; // When server received
   
-  // Product
-  grade: string;
-  quantity: number; // m³
+  // Location
+  gpsCoordinates?: { lat: number; lng: number };
+  gpsAccuracy?: number;
   
-  // Schedule
-  scheduledTime: string;
+  // Source
+  source: 'driver_app' | 'gps' | 'manual';
   
-  // Status
-  currentStatus: DispatchStatus;
-  
-  // Actions available
-  canStartLoading: boolean;
-  canDepartPlant: boolean;
-  canArriveSite: boolean;
-  canStartUnloading: boolean;
-  canCompleteDelivery: boolean;
-  
-  // Challan
-  challanNumber?: string;
-  challanPdfUrl?: string;
-}
-
-export interface DriverAction {
-  dispatchId: string;
-  action: 'start_loading' | 'depart_plant' | 'arrive_site' | 'start_unloading' | 'complete_delivery' | 'report_issue';
-  
-  // Timestamp
-  timestamp: string;
-  source: 'manual' | 'gps' | 'driver_app';
-  
-  // Location (if GPS)
-  location?: { lat: number; lng: number };
-  
-  // Evidence (if photo/signature)
-  evidenceId?: string;
-  
-  // Issue details (if reporting)
-  issueType?: string;
-  issueDescription?: string;
-  issuePhotoId?: string;
-}
-
-// ============================================================================
-// Site Receiver
-// ============================================================================
-
-export interface SiteReceiverView {
-  expectedDeliveries: ExpectedDelivery[];
-}
-
-export interface ExpectedDelivery {
-  dispatchId: string;
-  dispatchNumber: string;
-  orderNumber: string;
-  
-  // Product
-  grade: string;
-  quantity: number; // m³
-  
-  // Schedule
-  scheduledTime: string;
-  estimatedArrival?: string;
-  
-  // Vehicle
-  mixerNumber: string;
-  driverName: string;
-  
-  // Status
-  currentStatus: DispatchStatus;
-  
-  // Actions
-  canConfirmReceipt: boolean;
-  canReportIssue: boolean;
-}
-
-export interface SiteReceiptConfirmation {
-  dispatchId: string;
-  
-  // Receiver
-  receiverName: string;
-  
-  // Quantity
-  acceptedQuantity: number; // m³
-  rejectedQuantity?: number; // m³
-  
-  // Receipt method
-  receiptMethod: 'signature' | 'otp' | 'photo';
-  signatureAttachmentId?: string;
-  otpCode?: string;
+  // Additional data
+  notes?: string;
   photoAttachmentId?: string;
   
-  // Issues
-  issues?: string;
+  // Sync status
+  syncStatus: 'pending' | 'synced' | 'failed';
+  syncError?: string;
   
-  // Timestamp
-  receiptTime: string;
-}
-
-// ============================================================================
-// Reports and KPIs
-// ============================================================================
-
-export interface DispatchReport {
-  date: string;
-  plantId: string;
+  // Offline
+  isOffline: boolean;
   
-  // Summary
-  totalDispatches: number;
-  totalQuantity: number; // m³
-  completedDeliveries: number;
-  returnedDeliveries: number;
-  rejectedDeliveries: number;
-  
-  // Timing
-  averageLoadingTime: number; // minutes
-  averageTransitTime: number; // minutes
-  averageWaitingTime: number; // minutes
-  averageUnloadingTime: number; // minutes
-  averageCycleTime: number; // minutes (total)
-  
-  // Performance
-  onTimeDeliveryPercent: number;
-  delayCount: number;
-  averageDelayMinutes: number;
-  
-  // Mixer utilization
-  mixerUtilization: MixerUtilization[];
-  
-  // Pump utilization
-  pumpUtilization: PumpUtilization[];
-  
-  // Costs
-  totalTransportCost: number;
-  averageCostPerM3: number;
-}
-
-export interface MixerUtilization {
-  mixerId: string;
-  mixerNumber: string;
-  tripsCompleted: number;
-  totalDistance: number; // km
-  totalDrumHours: number;
-  utilizationPercent: number;
-}
-
-export interface PumpUtilization {
-  pumpId: string;
-  pumpNumber: string;
-  bookingsCompleted: number;
-  totalPumpingHours: number;
-  totalQuantityPumped: number; // m³
-  utilizationPercent: number;
+  createdAt: string;
 }
 
 // ============================================================================
@@ -584,25 +435,111 @@ export interface DispatchConfiguration {
   // Timing
   maxLoadingTimeMinutes: number;
   maxTransitTimeMinutes: number;
-  maxSiteWaitingTimeMinutes: number;
-  maxUnloadingTimeMinutes: number;
-  
-  // Concrete age
+  maxSiteWaitingMinutes: number;
   maxConcreteAgeMinutes: number;
-  concreteAgeSourceStandard?: string;
   
   // Capacity
   overloadTolerancePercent: number;
   
   // Alerts
-  dispatchDelayAlertEnabled: boolean;
-  siteWaitingExcessAlertEnabled: boolean;
-  concreteAgeLimitAlertEnabled: boolean;
+  raiseDelayAlert: boolean;
+  raiseWaitingAlert: boolean;
+  raiseConcreteAgeAlert: boolean;
   
   // Receipt
-  requireSiteReceipt: boolean;
-  receiptMethods: ('signature' | 'otp' | 'photo')[];
+  requireSignature: boolean;
+  requireOTP: boolean;
+  requirePhoto: boolean;
   
+  // Metadata
   createdAt: string;
   updatedAt: string;
+}
+
+// ============================================================================
+// Reports and KPIs
+// ============================================================================
+
+export interface DispatchReport {
+  date: string;
+  plantId?: string;
+  
+  // Summary
+  totalDispatches: number;
+  completedDispatches: number;
+  returnedDispatches: number;
+  rejectedDispatches: number;
+  
+  // Quantities
+  totalDispatched: number; // m³
+  totalDelivered: number; // m³
+  totalReturned: number; // m³
+  totalRejected: number; // m³
+  
+  // Timing
+  averageLoadingTime: number; // minutes
+  averageTransitTime: number; // minutes
+  averageSiteWaitingTime: number; // minutes
+  averageUnloadingTime: number; // minutes
+  
+  // Performance
+  onTimeDeliveryPercent: number;
+  averageDeliveryCycleTime: number; // minutes
+  
+  // Exceptions
+  delayCount: number;
+  waitingExcessCount: number;
+  concreteAgeExceededCount: number;
+  
+  // Costs
+  totalTransportCost: number;
+  averageCostPerM3: number;
+}
+
+export interface MixerUtilizationReport {
+  mixerId: string;
+  mixerNumber: string;
+  date: string;
+  
+  // Trips
+  totalTrips: number;
+  completedTrips: number;
+  
+  // Hours
+  totalHours: number;
+  productiveHours: number;
+  idleHours: number;
+  
+  // Distance
+  totalKilometres: number;
+  
+  // Fuel
+  totalFuelConsumed: number; // litres
+  fuelEfficiency: number; // L/km or L/hr
+  
+  // Utilization
+  utilizationPercent: number;
+}
+
+export interface PumpUtilizationReport {
+  pumpId: string;
+  pumpNumber: string;
+  date: string;
+  
+  // Bookings
+  totalBookings: number;
+  completedBookings: number;
+  
+  // Hours
+  totalHours: number;
+  pumpingHours: number;
+  
+  // Quantity
+  totalQuantityPumped: number; // m³
+  
+  // Utilization
+  utilizationPercent: number;
+  
+  // Revenue
+  totalCharges: number;
 }
