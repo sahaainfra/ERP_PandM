@@ -27,7 +27,8 @@
 | 20 | ERP-Linked Conversations, Chat Notifications & Responsive Interface | 5 | ✅ Complete | 2026-01-28 | [part-20-report.md](parts/part-20-report.md) |
 | 21 | Finance, Accounting, Costing & Commercial Integration | 6 | ✅ Complete | 2026-01-28 | [part-21-report.md](parts/part-21-report.md) |
 | 22 | Dashboard Framework; Executive, Fleet, Operator-Reporting and Fuel-Verification Dashboards | 6 | ✅ Complete | 2026-01-28 | [part-22-report.md](parts/part-22-report.md) |
-| 23 | Performance Optimization & Caching | 6 | 🔲 Not started | — | — |
+| 23 | RMC, Dispatch and Financial Dashboards; Management Alerts and Action Center | 6 | ✅ Complete | 2026-01-28 | [part-23-report.md](parts/part-23-report.md) |
+| 24 | Reports, Exports and Auditability | 6 | ✅ Complete | 2026-01-28 | [part-24-report.md](parts/part-24-report.md) |
 | 24 | Deployment, CI/CD & Monitoring | 6 | 🔲 Not started | — | — |
 | 25 | User Acceptance Testing & Go-Live | 6 | 🔲 Not started | — | — |
 

@@ -74,6 +74,10 @@ import * as costingService from './costingService';
 import * as kpiRegistryService from './kpiRegistry';
 import * as aggregationService from './aggregationService';
 import * as dashboardFrameworkService from './dashboardFramework';
+import * as reportEngineService from './reportEngine';
+import * as exportService from './exportService';
+import * as auditViewerService from './auditViewer';
+import * as evidencePackService from './evidencePackService';
 
 export {
   mastersService as masters,
@@ -123,6 +127,10 @@ export {
   kpiRegistryService as kpiRegistry,
   aggregationService as aggregation,
   dashboardFrameworkService as dashboardFramework,
+  reportEngineService as reportEngine,
+  exportService as export,
+  auditViewerService as auditViewer,
+  evidencePackService as evidencePack,
 };
 
 // ============================================================================
@@ -146,6 +154,7 @@ import * as batch from './batchService';
 import * as posting from './postingService';
 import * as kpiRegistry from './kpiRegistry';
 import * as dashboardFramework from './dashboardFramework';
+import * as reportEngine from './reportEngine';
 import { logger } from './api';
 import { storage } from './storage';
 
@@ -225,6 +234,10 @@ export async function initializePlatform(): Promise<void> {
   // Seed dashboard layouts (Part 22)
   await dashboardFramework.seedDefaultDashboardLayouts();
   logger.info('Dashboard layouts seeded');
+
+  // Seed default reports (Part 24)
+  await reportEngine.seedDefaultReports();
+  logger.info('Default reports seeded');
 
   logger.info('Platform initialization complete');
 }

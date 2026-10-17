@@ -41,6 +41,10 @@ import RMCProductionDashboard from './pages/RMCProductionDashboard';
 import DispatchLogisticsDashboard from './pages/DispatchLogisticsDashboard';
 import FinancialDashboard from './pages/FinancialDashboard';
 import AlertActionCenter from './pages/AlertActionCenter';
+import ReportCatalogue from './pages/ReportCatalogue';
+import ReportViewer from './pages/ReportViewer';
+import AuditTrailViewer from './pages/AuditTrailViewer';
+import EvidencePackGenerator from './pages/EvidencePackGenerator';
 
 export default function App() {
   return (
@@ -89,6 +93,10 @@ export default function App() {
           <Route path="/dashboards/dispatch-logistics" element={<DispatchLogisticsDashboard />} />
           <Route path="/dashboards/financial" element={<FinancialDashboard />} />
           <Route path="/alerts/action-center" element={<AlertActionCenter />} />
+          <Route path="/reports" element={<ReportCatalogue />} />
+          <Route path="/reports/:id" element={<ReportViewer />} />
+          <Route path="/audit-trail" element={<AuditTrailViewer />} />
+          <Route path="/evidence-packs" element={<EvidencePackGenerator />} />
         </Routes>
       </Layout>
     </BrowserRouter>

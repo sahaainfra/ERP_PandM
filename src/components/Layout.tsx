@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Truck, Fuel, Factory, MessageSquare,
   DollarSign, Bell, Shield, Menu, X, ChevronDown, User, Settings, LogOut,
-  CheckSquare
+  CheckSquare, FileText, History
 } from 'lucide-react';
 
 const navItems = [
@@ -16,6 +16,9 @@ const navItems = [
   { path: '/dashboards/dispatch-logistics', label: 'Dispatch & Logistics', icon: Truck },
   { path: '/dashboards/financial', label: 'Financial & Profitability', icon: DollarSign },
   { path: '/alerts/action-center', label: 'Alert Action Center', icon: Bell },
+  { path: '/reports', label: 'Reports', icon: FileText },
+  { path: '/audit-trail', label: 'Audit Trail', icon: History },
+  { path: '/evidence-packs', label: 'Evidence Packs', icon: FileText },
   { path: '/assets', label: 'Asset Master', icon: Truck },
   { path: '/allocations', label: 'Allocations', icon: Truck },
   { path: '/operators', label: 'Operators', icon: Truck },

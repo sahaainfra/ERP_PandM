@@ -506,3 +506,41 @@
 - **Rationale**: Relevant information for each role
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-101: Shared Aggregation Layer *(Added Part 24)*
+- **Decision**: Reports use same KPI registry and aggregation as dashboards
+- **Rationale**: Ensures consistency between reports and dashboards
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-102: Report Versioning *(Added Part 24)*
+- **Decision**: Report definitions are versioned with change notes
+- **Rationale**: Tracks report evolution and ensures reproducibility
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-103: Asynchronous Export Processing *(Added Part 24)*
+- **Decision**: Large exports run as background jobs
+- **Rationale**: Prevents UI blocking for large datasets
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-104: Export URL Expiry *(Added Part 24)*
+- **Decision**: Download URLs expire after 24 hours
+- **Rationale**: Security best practice for sensitive data
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-105: Evidence Pack Hashing *(Added Part 24)*
+- **Decision**: All attachments in evidence packs include SHA-256 hashes
+- **Rationale**: Ensures integrity and non-repudiation
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-106: Audit Trail Completeness *(Added Part 24)*
+- **Decision**: Every action is logged with before/after values
+- **Rationale**: Complete traceability for compliance
+- **Date**: 2026-01-28
+- **Status**: Active
