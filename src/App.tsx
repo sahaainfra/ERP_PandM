@@ -37,6 +37,10 @@ import ExecutiveDashboard from './pages/ExecutiveDashboard';
 import FleetDashboard from './pages/FleetDashboard';
 import OperatorReportingDashboard from './pages/OperatorReportingDashboard';
 import FuelVerificationDashboard from './pages/FuelVerificationDashboard';
+import RMCProductionDashboard from './pages/RMCProductionDashboard';
+import DispatchLogisticsDashboard from './pages/DispatchLogisticsDashboard';
+import FinancialDashboard from './pages/FinancialDashboard';
+import AlertActionCenter from './pages/AlertActionCenter';
 
 export default function App() {
   return (
@@ -81,6 +85,10 @@ export default function App() {
           <Route path="/dashboards/fleet" element={<FleetDashboard />} />
           <Route path="/dashboards/operator" element={<OperatorReportingDashboard />} />
           <Route path="/dashboards/fuel" element={<FuelVerificationDashboard />} />
+          <Route path="/dashboards/rmc-production" element={<RMCProductionDashboard />} />
+          <Route path="/dashboards/dispatch-logistics" element={<DispatchLogisticsDashboard />} />
+          <Route path="/dashboards/financial" element={<FinancialDashboard />} />
+          <Route path="/alerts/action-center" element={<AlertActionCenter />} />
         </Routes>
       </Layout>
     </BrowserRouter>
