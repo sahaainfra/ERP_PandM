@@ -78,6 +78,7 @@ import * as reportEngineService from './reportEngine';
 import * as exportService from './exportService';
 import * as auditViewerService from './auditViewer';
 import * as evidencePackService from './evidencePackService';
+import * as platformAdminService from './platformAdminService';
 
 export {
   mastersService as masters,
@@ -131,6 +132,7 @@ export {
   exportService as export,
   auditViewerService as auditViewer,
   evidencePackService as evidencePack,
+  platformAdminService as platformAdmin,
 };
 
 // ============================================================================

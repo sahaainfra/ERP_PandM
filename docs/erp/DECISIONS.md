@@ -544,3 +544,41 @@
 - **Rationale**: Complete traceability for compliance
 - **Date**: 2026-01-28
 - **Status**: Active
+
+---
+
+## DEC-113: Separate Website Administrator Role *(Added Part 31)*
+- **Decision**: Create dedicated Website Administrator role separate from System Administrator
+- **Rationale**: Clear separation of platform administration from business operations; reduces risk of accidental business data modification
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-114: MFA Mandatory for Platform Administration *(Added Part 31)*
+- **Decision**: Require MFA for all Website Administrator operations
+- **Rationale**: Platform administration is high-risk; MFA provides additional security layer
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-115: Privileged Operation Confirmation *(Added Part 31)*
+- **Decision**: Require explicit confirmation with reason for all privileged operations
+- **Rationale**: Creates audit trail and prevents accidental changes; supports compliance requirements
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-116: Emergency Access Time-Limit *(Added Part 31)*
+- **Decision**: Emergency access sessions automatically expire after 60 minutes
+- **Rationale**: Limits exposure window; forces timely completion of emergency tasks
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-117: Immutable Audit Trail *(Added Part 31)*
+- **Decision**: Website Administrator cannot edit or delete audit entries
+- **Rationale**: Ensures audit integrity; prevents cover-up of unauthorized actions
+- **Date**: 2026-01-28
+- **Status**: Active
+
+## DEC-118: Dual Control for Emergency Credentials *(Added Part 31)*
+- **Decision**: Require two authorized individuals to retrieve emergency credentials
+- **Rationale**: Prevents single-person abuse; provides witness for emergency access
+- **Date**: 2026-01-28
+- **Status**: Active

@@ -1,6 +1,6 @@
 # ConstructERP — Permission Matrix
 
-> Last updated: Part 26 Implementation (Add-on Series)
+> Last updated: Part 31 Implementation (Website Administrator Role)
 
 ## Overview
 
@@ -102,6 +102,7 @@ This document defines the complete permission matrix for the ConstructERP system
 |------|-------------|-------------|----------|
 | `hr_manager` | HR Manager - HR operations, attendance approval, leave management, payroll oversight | ✅ | ❌ |
 | `hr_executive` | HR Executive - HR operations, attendance processing, leave tracking | ❌ | ❌ |
+| `website_administrator` | Website Administrator - Platform configuration, user management, system maintenance, emergency access (Part 31) | ✅ | ❌ |
 
 ### Read-Only Roles
 
@@ -443,6 +444,30 @@ This document defines the complete permission matrix for the ConstructERP system
 | `chat_message` | `view` |
 | `notification` | `view` |
 | All other resources | `view` |
+
+### Website Administrator (Part 31)
+
+**Scope**: Company-wide (platform administration only)
+
+**Important**: Website Administrator role is specifically for platform maintenance and is separate from business operations. This role CANNOT access business records (logbooks, fuel, attendance, maintenance, RMC, QC, finance).
+
+| Resource | Permissions |
+|----------|-------------|
+| `platform_config` | `view`, `edit`, `administer` |
+| `user` | `view`, `create`, `edit`, `delete` |
+| `backup` | `view`, `create`, `administer` |
+| `emergency_access` | `view`, `create`, `administer` |
+| `audit_log` | `view`, `export` |
+| `geofence` | `view`, `create`, `edit`, `delete` |
+| All business resources | No access (separation of duties) |
+
+**Restrictions**:
+- ❌ Cannot create, edit, approve, post, or export business records
+- ❌ Cannot view cost, personal, or location fields in business records
+- ❌ Cannot grant privileged roles to themselves (requires second-person approval)
+- ❌ Cannot edit or delete audit trail entries
+- ✅ All privileged operations require MFA verification
+- ✅ All actions logged in immutable audit trail
 
 ## Field-Level Permissions
 

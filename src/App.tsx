@@ -45,6 +45,7 @@ import ReportCatalogue from './pages/ReportCatalogue';
 import ReportViewer from './pages/ReportViewer';
 import AuditTrailViewer from './pages/AuditTrailViewer';
 import EvidencePackGenerator from './pages/EvidencePackGenerator';
+import PlatformAdministration from './pages/PlatformAdministration';
 
 export default function App() {
   return (
@@ -97,6 +98,7 @@ export default function App() {
           <Route path="/reports/:id" element={<ReportViewer />} />
           <Route path="/audit-trail" element={<AuditTrailViewer />} />
           <Route path="/evidence-packs" element={<EvidencePackGenerator />} />
+          <Route path="/platform-admin" element={<PlatformAdministration />} />
         </Routes>
       </Layout>
     </BrowserRouter>

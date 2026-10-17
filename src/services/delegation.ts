@@ -80,6 +80,7 @@ export async function createDelegation(params: {
     general_staff: 20,
     hr_manager: 70,
     hr_executive: 50,
+    website_administrator: 95,
     auditor: 10,
     viewer: 0,
   };

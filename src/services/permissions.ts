@@ -97,7 +97,12 @@ export type PermissionResource =
   | 'attendance_correction'
   | 'leave'
   | 'shift'
-  | 'work_calendar';
+  | 'work_calendar'
+  // Platform Administration (Part 27)
+  | 'platform_config'
+  | 'user'
+  | 'backup'
+  | 'emergency_access';
 
 export type PermissionScope =
   | 'company'

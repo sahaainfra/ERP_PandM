@@ -41,6 +41,7 @@ const navItems = [
   { path: '/alerts', label: 'Alerts', icon: Bell },
   { path: '/approvals/pending', label: 'Approvals', icon: CheckSquare },
   { path: '/admin/permissions', label: 'Permissions Admin', icon: Shield },
+  { path: '/platform-admin', label: 'Platform Admin', icon: Settings },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {

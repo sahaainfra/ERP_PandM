@@ -149,6 +149,7 @@ export type UserRole =
   // Add-on roles (Parts 26-33)
   | 'hr_manager'
   | 'hr_executive'
+  | 'website_administrator'
   // Read-only
   | 'auditor'
   | 'viewer';
