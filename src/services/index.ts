@@ -1,0 +1,286 @@
+/**
+ * Part 02 & 03 — Shared Platform Foundation + Roles & Permissions
+ *
+ * Main entry point that exports all services and provides initialization.
+ */
+
+// Re-export all types
+export * from './types';
+
+// Re-export storage
+export { storage, InMemoryAdapter } from './storage';
+export type { StorageAdapter } from './storage';
+
+// Re-export utilities
+export {
+  generateId,
+  generateRequestId,
+  sha256,
+  getCurrentFinancialYear,
+  isInFinancialYear,
+  formatINR,
+  formatNumber,
+  formatDate,
+  formatDateTime,
+  deepClone,
+  computeDiff,
+} from './utils';
+
+// Re-export services
+import * as mastersService from './masters';
+import * as numberingService from './numbering';
+import * as auditService from './audit';
+import * as attachmentsService from './attachments';
+import * as workflowService from './workflow';
+import * as alertsService from './alerts';
+import * as idempotencyService from './idempotency';
+import * as apiService from './api';
+import * as rolesService from './roles';
+import * as permissionsService from './permissions';
+import * as delegationService from './delegation';
+import * as approvalMatrixService from './approvalMatrix';
+import * as assetCategoriesService from './assetCategories';
+import * as assetsService from './assets';
+import * as assetAllocationService from './assetAllocation';
+import * as operatorManagementService from './operatorManagement';
+import * as workflowConfigService from './workflowConfig';
+import * as approvalReviewService from './approvalReview';
+import * as amendmentService from './amendmentService';
+import * as fuelMastersService from './fuelMasters';
+import * as fuelReceiptsService from './fuelReceipts';
+import * as fuelIssuesService from './fuelIssues';
+import * as fuelTransfersService from './fuelTransfers';
+import * as tankReconciliationService from './tankReconciliation';
+import * as calibrationService from './calibrationService';
+import * as benchmarkService from './benchmarkService';
+import * as verificationEngineService from './verificationEngine';
+import * as verificationJobService from './verificationJob';
+import * as investigationService from './investigationService';
+import * as pmPlanService from './pmPlanService';
+import * as workOrderService from './workOrderService';
+import * as reliabilityMetricsService from './reliabilityMetricsService';
+import * as integrationFrameworkService from './integrationFramework';
+import * as telematicsAdapterService from './telematicsAdapter';
+import * as batchingWeighbridgeAdapterService from './batchingWeighbridgeAdapter';
+import * as notificationAdaptersService from './notificationAdapters';
+import * as rmcPlantService from './rmcPlantService';
+import * as batchService from './batchService';
+import * as productionOrderService from './productionOrderService';
+import * as stoppageService from './stoppageService';
+import * as plantKPIService from './plantKPIService';
+import * as mixDesignService from './mixDesignService';
+import * as postingService from './postingService';
+import * as costingService from './costingService';
+import * as kpiRegistryService from './kpiRegistry';
+import * as aggregationService from './aggregationService';
+import * as dashboardFrameworkService from './dashboardFramework';
+import * as reportEngineService from './reportEngine';
+import * as exportService from './exportService';
+import * as auditViewerService from './auditViewer';
+import * as evidencePackService from './evidencePackService';
+import * as platformAdminService from './platformAdminService';
+
+export {
+  mastersService as masters,
+  numberingService as numbering,
+  auditService as audit,
+  attachmentsService as attachments,
+  workflowService as workflow,
+  alertsService as alerts,
+  idempotencyService as idempotency,
+  apiService as api,
+  rolesService as roles,
+  permissionsService as permissions,
+  delegationService as delegation,
+  approvalMatrixService as approvalMatrix,
+  assetCategoriesService as assetCategories,
+  assetsService as assets,
+  assetAllocationService as assetAllocation,
+  operatorManagementService as operatorManagement,
+  workflowConfigService as workflowConfig,
+  approvalReviewService as approvalReview,
+  amendmentService as amendments,
+  fuelMastersService as fuelMasters,
+  fuelReceiptsService as fuelReceipts,
+  fuelIssuesService as fuelIssues,
+  fuelTransfersService as fuelTransfers,
+  tankReconciliationService as tankReconciliation,
+  calibrationService as calibration,
+  benchmarkService as benchmark,
+  verificationEngineService as verificationEngine,
+  verificationJobService as verificationJob,
+  investigationService as investigation,
+  pmPlanService as pmPlan,
+  workOrderService as workOrder,
+  reliabilityMetricsService as reliabilityMetrics,
+  integrationFrameworkService as integrationFramework,
+  telematicsAdapterService as telematicsAdapter,
+  batchingWeighbridgeAdapterService as batchingWeighbridgeAdapter,
+  notificationAdaptersService as notificationAdapters,
+  rmcPlantService as rmcPlant,
+  batchService as batch,
+  productionOrderService as productionOrder,
+  stoppageService as stoppage,
+  plantKPIService as plantKPI,
+  mixDesignService as mixDesign,
+  postingService as posting,
+  costingService as costing,
+  kpiRegistryService as kpiRegistry,
+  aggregationService as aggregation,
+  dashboardFrameworkService as dashboardFramework,
+  reportEngineService as reportEngine,
+  exportService as export,
+  auditViewerService as auditViewer,
+  evidencePackService as evidencePack,
+  platformAdminService as platformAdmin,
+};
+
+// ============================================================================
+// Initialization
+// ============================================================================
+
+import * as workflow from './workflow';
+import * as alerts from './alerts';
+import * as masters from './masters';
+import * as roles from './roles';
+import * as permissions from './permissions';
+import * as approvalMatrix from './approvalMatrix';
+import * as assetCategories from './assetCategories';
+import * as workflowConfig from './workflowConfig';
+import * as fuelMasters from './fuelMasters';
+import * as benchmark from './benchmarkService';
+import * as pmPlan from './pmPlanService';
+import * as integrationFramework from './integrationFramework';
+import * as rmcPlant from './rmcPlantService';
+import * as batch from './batchService';
+import * as posting from './postingService';
+import * as kpiRegistry from './kpiRegistry';
+import * as dashboardFramework from './dashboardFramework';
+import * as reportEngine from './reportEngine';
+import { logger } from './api';
+import { storage } from './storage';
+
+/**
+ * Initialize all platform services.
+ * Call this once at application startup.
+ */
+export async function initializePlatform(): Promise<void> {
+  logger.info('Initializing platform services...');
+
+  // Initialize default workflows
+  await workflow.initializeDefaultWorkflows();
+  logger.info('Default workflows initialized');
+
+  // Initialize default alert rules
+  await alerts.initializeDefaultAlertRules();
+  logger.info('Default alert rules initialized');
+
+  // Seed default UoMs
+  await seedDefaultUoMs();
+  logger.info('Default UoMs seeded');
+
+  // Seed default roles (Part 03)
+  await roles.seedDefaultRoles();
+  logger.info('Default roles seeded');
+
+  // Seed default permissions (Part 03)
+  await permissions.seedDefaultPermissions();
+  logger.info('Default permissions seeded');
+
+  // Seed default approval rules (Part 03)
+  await approvalMatrix.seedDefaultApprovalRules();
+  logger.info('Default approval rules seeded');
+
+  // Seed asset categories (Part 04)
+  await assetCategories.seedAssetCategories();
+  logger.info('Asset categories seeded');
+
+  // Seed workflow configuration (Part 08)
+  await workflowConfig.seedDefaultRoutingRules();
+  await workflowConfig.seedDefaultValidationFlags();
+  await workflowConfig.seedDefaultSLAs();
+  logger.info('Workflow configuration seeded');
+
+  // Seed fuel masters (Part 09)
+  await fuelMasters.seedDefaultFuelTypes();
+  logger.info('Fuel masters seeded');
+
+  // Seed fuel benchmarks (Part 10)
+  await benchmark.seedDefaultBenchmarks();
+  logger.info('Fuel benchmarks seeded');
+
+  // Seed PM plans (Part 11)
+  await pmPlan.seedDefaultPMPlans();
+  logger.info('PM plans seeded');
+
+  // Seed integration connectors (Part 12)
+  await integrationFramework.seedDefaultConnectors();
+  logger.info('Integration connectors seeded');
+
+  // Seed RMC plants (Part 13)
+  await rmcPlant.seedDefaultPlants();
+  logger.info('RMC plants seeded');
+
+  // Seed weighing tolerance config (Part 13)
+  await batch.seedDefaultToleranceConfig();
+  logger.info('Weighing tolerance config seeded');
+
+  // Seed posting rules (Part 21)
+  await posting.seedDefaultPostingRules();
+  logger.info('Posting rules seeded');
+
+  // Seed KPI definitions (Part 22)
+  await kpiRegistry.seedDefaultKPIs();
+  logger.info('KPI definitions seeded');
+
+  // Seed dashboard layouts (Part 22)
+  await dashboardFramework.seedDefaultDashboardLayouts();
+  logger.info('Dashboard layouts seeded');
+
+  // Seed default reports (Part 24)
+  await reportEngine.seedDefaultReports();
+  logger.info('Default reports seeded');
+
+  logger.info('Platform initialization complete');
+}
+
+/**
+ * Seed default units of measure.
+ */
+async function seedDefaultUoMs(): Promise<void> {
+  const existing = await masters.listUoMs();
+  if (existing.length > 0) return;
+
+  const uoms = [
+    { code: 'L', name: 'Litre', category: 'volume' as const, factorToBase: 1, decimalPlaces: 2, roundingRule: 'half_up' as const },
+    { code: 'KL', name: 'Kilolitre', category: 'volume' as const, factorToBase: 1000, decimalPlaces: 3, roundingRule: 'half_up' as const },
+    { code: 'M3', name: 'Cubic Metre', category: 'volume' as const, factorToBase: 1000, decimalPlaces: 3, roundingRule: 'half_up' as const },
+    { code: 'KG', name: 'Kilogram', category: 'weight' as const, factorToBase: 1, decimalPlaces: 2, roundingRule: 'half_up' as const },
+    { code: 'TNE', name: 'Tonne', category: 'weight' as const, factorToBase: 1000, decimalPlaces: 3, roundingRule: 'half_up' as const },
+    { code: 'HRS', name: 'Hour', category: 'time' as const, factorToBase: 1, decimalPlaces: 2, roundingRule: 'half_up' as const },
+    { code: 'KM', name: 'Kilometre', category: 'length' as const, factorToBase: 1, decimalPlaces: 2, roundingRule: 'half_up' as const },
+    { code: 'M', name: 'Metre', category: 'length' as const, factorToBase: 0.001, decimalPlaces: 2, roundingRule: 'half_up' as const },
+    { code: 'NOS', name: 'Number', category: 'count' as const, factorToBase: 1, decimalPlaces: 0, roundingRule: 'round' as const },
+    { code: 'BAG', name: 'Bag (50 kg cement)', category: 'weight' as const, factorToBase: 50, decimalPlaces: 0, roundingRule: 'round' as const },
+    { code: 'SQM', name: 'Square Metre', category: 'area' as const, factorToBase: 1, decimalPlaces: 2, roundingRule: 'half_up' as const },
+  ];
+
+  for (const uom of uoms) {
+    await masters.createUoM({
+      code: uom.code,
+      name: uom.name,
+      category: uom.category,
+      factorToBase: uom.factorToBase,
+      decimalPlaces: uom.decimalPlaces,
+      roundingRule: uom.roundingRule,
+    });
+  }
+}
+
+/**
+ * Reset all platform data (for testing).
+ */
+export function resetPlatform(): void {
+  storage.clearAll();
+  logger.info('Platform data reset');
+}
