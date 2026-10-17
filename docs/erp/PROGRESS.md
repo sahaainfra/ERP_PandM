@@ -30,6 +30,14 @@
 | 23 | RMC, Dispatch and Financial Dashboards; Management Alerts and Action Center | 6 | ✅ Complete | 2026-01-28 | [part-23-report.md](parts/part-23-report.md) |
 | 24 | Reports, Exports and Auditability | 6 | ✅ Complete | 2026-01-28 | [part-24-report.md](parts/part-24-report.md) |
 | 25 | Testing, Acceptance, Security, Deployment & Final Deliverables | 7 | ✅ Complete | 2026-01-28 | [part-25-report.md](parts/part-25-report.md) |
+| 26 | Add-on Assessment & Shared Foundations (Geofence, Export, Permissions) | 8 | ✅ Complete | 2026-01-28 | [part-26-report.md](parts/part-26-report.md) |
+| 27 | Attendance Tracking with Geofencing | 8 | 🔲 Not started | — | — |
+| 28 | Leave Management | 8 | 🔲 Not started | — | — |
+| 29 | Shift Scheduling & Work Calendar | 8 | 🔲 Not started | — | — |
+| 30 | Payroll Integration | 8 | 🔲 Not started | — | — |
+| 31 | Platform Administration (Website Administrator) | 8 | 🔲 Not started | — | — |
+| 32 | Mobile/PWA Enhancements | 8 | 🔲 Not started | — | — |
+| 33 | Final Integration Testing & Documentation | 8 | 🔲 Not started | — | — |
 
 ## Phase Descriptions
 
@@ -42,6 +50,7 @@
 | 4 | Finance + Dashboards + Alerts | 12–16 |
 | 5 | Extended Modules + Integrations | 17–21 |
 | 6 | Hardening + Deployment + Go-Live | 22–25 |
+| 8 | Add-on Series (Attendance, HR, Admin) | 26–33 |
 
 ## Dependencies
 

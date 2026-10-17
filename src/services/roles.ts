@@ -290,6 +290,30 @@ export async function seedDefaultRoles(): Promise<void> {
       isActive: true,
     },
 
+    // Add-on roles (Parts 26-33)
+    {
+      code: 'hr_manager',
+      name: 'HR Manager',
+      description: 'HR operations, attendance approval, leave management, payroll oversight',
+      category: 'management',
+      defaultScopes: ['company', 'department'],
+      canApprove: true,
+      canPost: false,
+      canAdmin: false,
+      isActive: true,
+    },
+    {
+      code: 'hr_executive',
+      name: 'HR Executive',
+      description: 'HR operations, attendance processing, leave tracking',
+      category: 'support',
+      defaultScopes: ['company', 'department'],
+      canApprove: false,
+      canPost: false,
+      canAdmin: false,
+      isActive: true,
+    },
+
     // Read-only
     {
       code: 'auditor',

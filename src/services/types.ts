@@ -146,6 +146,9 @@ export type UserRole =
   | 'accounts_executive'
   | 'logistics_staff'
   | 'general_staff'
+  // Add-on roles (Parts 26-33)
+  | 'hr_manager'
+  | 'hr_executive'
   // Read-only
   | 'auditor'
   | 'viewer';

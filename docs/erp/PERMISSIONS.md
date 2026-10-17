@@ -1,6 +1,6 @@
 # ConstructERP — Permission Matrix
 
-> Last updated: Part 03 Implementation
+> Last updated: Part 26 Implementation (Add-on Series)
 
 ## Overview
 
@@ -29,6 +29,8 @@ This document defines the complete permission matrix for the ConstructERP system
 | `administer` | Administrative operations |
 | `view_cost` | View cost/salary fields |
 | `view_personal` | View personal data fields |
+| `view_location` | View raw GPS coordinates of location captures (Part 26) |
+| `platform_admin` | Website Administrator functions - system configuration, user management (Part 27) |
 
 ## Permission Scopes
 
@@ -42,6 +44,8 @@ This document defines the complete permission matrix for the ConstructERP system
 | `department` | Access to records in assigned department |
 | `own` | Access only to records created by the user |
 | `assigned` | Access only to records/assets assigned to the user |
+| `direct_reports` | Access to records of users who report directly to the user (Part 26) |
+| `indirect_reports` | Access to records of users who report indirectly (through hierarchy) to the user (Part 26) |
 
 ## Role Definitions
 
@@ -92,12 +96,75 @@ This document defines the complete permission matrix for the ConstructERP system
 | `logistics_staff` | Logistics Staff | ❌ | ❌ |
 | `general_staff` | General Staff | ❌ | ❌ |
 
+### Add-on Roles (Parts 26-33)
+
+| Role | Description | Can Approve | Can Post |
+|------|-------------|-------------|----------|
+| `hr_manager` | HR Manager - HR operations, attendance approval, leave management, payroll oversight | ✅ | ❌ |
+| `hr_executive` | HR Executive - HR operations, attendance processing, leave tracking | ❌ | ❌ |
+
 ### Read-Only Roles
 
 | Role | Description | Can Approve | Can Post |
 |------|-------------|-------------|----------|
 | `auditor` | Auditor (Read-Only) | ❌ | ❌ |
 | `viewer` | Viewer / Authorized Chat User | ❌ | ❌ |
+
+## Permission Resources
+
+### Core Resources (Parts 01-25)
+
+| Resource | Description |
+|----------|-------------|
+| `equipment` | Asset/equipment master records |
+| `operator_log` | Operator daily logbooks |
+| `operator_submission` | Operator submission records |
+| `fuel_issue` | Fuel issue vouchers |
+| `fuel_verification` | Fuel verification records |
+| `maintenance_order` | Maintenance work orders |
+| `calibration_record` | Calibration records |
+| `rmc_plant` | RMC plant master |
+| `batch_ticket` | RMC batch tickets |
+| `mix_design` | Mix design records |
+| `qc_test` | Quality control test records |
+| `rmc_order` | RMC production orders |
+| `dispatch` | Dispatch records |
+| `journal_voucher` | Financial journal vouchers |
+| `payment_voucher` | Payment vouchers |
+| `receipt_voucher` | Receipt vouchers |
+| `purchase_order` | Purchase orders |
+| `goods_receipt` | Goods receipt notes |
+| `user` | User accounts |
+| `role` | Role definitions |
+| `project` | Project master |
+| `site` | Site master |
+| `vendor` | Vendor master |
+| `customer` | Customer master |
+| `item` | Inventory items |
+| `warehouse` | Warehouse/store locations |
+| `chat_channel` | Chat channels |
+| `chat_message` | Chat messages |
+| `notification` | Notifications |
+| `alert` | System alerts |
+| `audit_log` | Audit trail records |
+| `report` | Report definitions |
+| `dashboard` | Dashboard layouts |
+| `attachment` | File attachments |
+| `asset` | Asset records (Part 04) |
+| `asset_category` | Asset categories |
+| `asset_document` | Asset documents |
+| `asset_meter` | Asset meter readings |
+| `geofence` | Geofence definitions (Part 26) |
+
+### Add-on Resources (Parts 26-33)
+
+| Resource | Description |
+|----------|-------------|
+| `attendance_record` | Attendance punch records (Part 27) |
+| `attendance_correction` | Attendance correction/approval records (Part 27) |
+| `leave` | Leave applications and balances (Part 28) |
+| `shift` | Shift definitions and assignments (Part 29) |
+| `work_calendar` | Work calendar definitions (Part 29) |
 
 ## Permission Matrix by Role
 

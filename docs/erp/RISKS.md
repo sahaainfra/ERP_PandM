@@ -34,3 +34,39 @@ Low          .       .       .
 2. R-002: Authentication
 3. R-003: Backend API
 4. R-006: Test suite
+
+---
+
+## Add-on Series Risks (Parts 26–33)
+
+| ID | Risk | Likelihood | Impact | Mitigation | Owner |
+|----|------|-----------|--------|------------|-------|
+| R-016 | **Attendance data migration** — Existing operators must be linked to employee records. Data loss or duplication risk. | Medium (50%) | High | Part 27 must provide migration script with validation. Test on copy of production data first. | Data Lead |
+| R-017 | **Attendance privacy compliance** — Location tracking requires employee consent under Digital Personal Data Protection Act 2023. | High (80%) | High | Part 27 must implement consent management. Add privacy notice to mobile app. Consult legal team. | Legal/Compliance |
+| R-018 | **Real-time attendance performance** — High-frequency GPS writes may overwhelm database. | Medium (50%) | Medium | Part 27 must batch attendance writes (every 5 minutes). Use write-optimized storage. Monitor write latency. | Backend Lead |
+| R-019 | **Labour law compliance** — Working hours, overtime, leave accrual rules not encoded. | High (70%) | High | Part 28 must verify current labour laws against state regulations. Encode as configurable rules with source references. | HR/Legal |
+| R-020 | **Geofence accuracy** — GPS accuracy (5-20m) may cause false attendance marks. | High (80%) | Medium | Part 26 must add buffer zone (50m). Require 3 consecutive readings inside geofence. Allow manual correction. | Product |
+| R-021 | **Geofence performance** — Point-in-polygon calculations expensive at scale. | Medium (50%) | Medium | Part 26 must cache geofence results. Use spatial indexing (PostGIS). Limit polygon vertices to 20. | Backend Lead |
+| R-022 | **Export file compatibility** — Generated PDF/Excel may not open in all tools. | Medium (50%) | Medium | Part 26 must test exports in Adobe Reader, MS Excel, LibreOffice. Use standard libraries (pdfkit, exceljs). | QA Lead |
+| R-023 | **Large export performance** — Reports with 10,000+ rows may timeout. | Medium (50%) | Medium | Part 26 must implement streaming exports. Add progress indicator. Limit max rows to 50,000. | Backend Lead |
+| R-024 | **Offline queue data loss** — Mobile app crash may lose unsynced attendance data. | Low (30%) | High | Part 27 must persist offline queue to IndexedDB. Add sync retry logic. Show unsynced count in UI. | Mobile Lead |
+| R-025 | **Offline queue conflicts** — Concurrent edits may cause sync conflicts. | Medium (50%) | Medium | Part 07 already has conflict resolution. Part 27 must extend to attendance. Show conflict resolution UI. | Backend Lead |
+| R-026 | **Super admin abuse** — Unrestricted access may be misused. | Low (20%) | High | Part 27 must log all super admin actions. Add quarterly audit. Require 2-person approval for critical changes. | Security Lead |
+| R-027 | **Dashboard performance** — Many widgets may slow page load. | Medium (50%) | Medium | Part 26 must lazy-load widgets. Cache KPI aggregations. Limit max widgets per dashboard to 20. | Frontend Lead |
+
+## Add-on Risk Heat Map
+
+```
+Impact →    Low    Medium   High    Critical
+Likelihood ↓
+Certain      .       .       .       .
+High         .       R-020   R-017, R-019, R-026
+Medium       .       R-021, R-022, R-023, R-025, R-027   R-016, R-018
+Low          .       .       R-024   .
+```
+
+## Add-on Critical Path Risks (Must resolve before Part 27)
+1. R-017: Attendance privacy compliance
+2. R-020: Geofence accuracy
+3. R-024: Offline queue data loss
+4. R-026: Super admin abuse prevention

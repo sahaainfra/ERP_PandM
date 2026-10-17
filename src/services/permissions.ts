@@ -30,7 +30,10 @@ export type PermissionAction =
   | 'export'
   | 'administer'
   | 'view_cost'
-  | 'view_personal';
+  | 'view_personal'
+  // Add-on actions (Part 26)
+  | 'view_location'
+  | 'platform_admin';
 
 export type PermissionResource =
   // Fleet & Equipment
@@ -86,7 +89,15 @@ export type PermissionResource =
   | 'asset'
   | 'asset_category'
   | 'asset_document'
-  | 'asset_meter';
+  | 'asset_meter'
+  // Geofence (Part 26)
+  | 'geofence'
+  // Add-on resources (Parts 26-33)
+  | 'attendance_record'
+  | 'attendance_correction'
+  | 'leave'
+  | 'shift'
+  | 'work_calendar';
 
 export type PermissionScope =
   | 'company'
@@ -96,7 +107,10 @@ export type PermissionScope =
   | 'plant'
   | 'department'
   | 'own'
-  | 'assigned';
+  | 'assigned'
+  // Add-on scopes (Part 26)
+  | 'direct_reports'
+  | 'indirect_reports';
 
 // ============================================================================
 // Permission Definition
