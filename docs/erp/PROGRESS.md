@@ -29,8 +29,7 @@
 | 22 | Dashboard Framework; Executive, Fleet, Operator-Reporting and Fuel-Verification Dashboards | 6 | ✅ Complete | 2026-01-28 | [part-22-report.md](parts/part-22-report.md) |
 | 23 | RMC, Dispatch and Financial Dashboards; Management Alerts and Action Center | 6 | ✅ Complete | 2026-01-28 | [part-23-report.md](parts/part-23-report.md) |
 | 24 | Reports, Exports and Auditability | 6 | ✅ Complete | 2026-01-28 | [part-24-report.md](parts/part-24-report.md) |
-| 24 | Deployment, CI/CD & Monitoring | 6 | 🔲 Not started | — | — |
-| 25 | User Acceptance Testing & Go-Live | 6 | 🔲 Not started | — | — |
+| 25 | Testing, Acceptance, Security, Deployment & Final Deliverables | 7 | ✅ Complete | 2026-01-28 | [part-25-report.md](parts/part-25-report.md) |
 
 ## Phase Descriptions
 
